@@ -46,9 +46,7 @@ export default class MenuUiHandler extends MessageUiHandler {
   constructor(scene: BattleScene, mode?: Mode) {
     super(scene, mode);
 
-    this.ignoredMenuOptions = !bypassLogin
-      ? [ ]
-      : [ MenuOptions.LOG_OUT ];
+    this.ignoredMenuOptions = [ ];
     this.menuOptions = Utils.getEnumKeys(MenuOptions).map(m => parseInt(MenuOptions[m]) as MenuOptions).filter(m => !this.ignoredMenuOptions.includes(m));
   }
 
@@ -121,16 +119,16 @@ export default class MenuUiHandler extends MessageUiHandler {
       });
     };
 
-    if (Utils.isLocal) {
-      manageDataOptions.push({
-        label: i18next.t("menuUiHandler:importSession"),
-        handler: () => {
-          confirmSlot(i18next.t("menuUiHandler:importSlotSelect"), () => true, slotId => this.scene.gameData.importData(GameDataType.SESSION, slotId));
-          return true;
-        },
-        keepOpen: true
-      });
-    }
+    // if (bypassLogin()) {
+    //   manageDataOptions.push({
+    //     label: i18next.t("menuUiHandler:importSession"),
+    //     handler: () => {
+    //       confirmSlot(i18next.t("menuUiHandler:importSlotSelect"), () => true, slotId => this.scene.gameData.importData(GameDataType.SESSION, slotId));
+    //       return true;
+    //     },
+    //     keepOpen: true
+    //   });
+    // }
     manageDataOptions.push({
       label: i18next.t("menuUiHandler:exportSession"),
       handler: () => {
@@ -152,16 +150,16 @@ export default class MenuUiHandler extends MessageUiHandler {
       },
       keepOpen: true
     });
-    if (Utils.isLocal) {
-      manageDataOptions.push({
-        label: i18next.t("menuUiHandler:importData"),
-        handler: () => {
-          this.scene.gameData.importData(GameDataType.SYSTEM);
-          return true;
-        },
-        keepOpen: true
-      });
-    }
+    // if (bypassLogin()) {
+    //   manageDataOptions.push({
+    //     label: i18next.t("menuUiHandler:importData"),
+    //     handler: () => {
+    //       this.scene.gameData.importData(GameDataType.SYSTEM);
+    //       return true;
+    //     },
+    //     keepOpen: true
+    //   });
+    // }
     manageDataOptions.push(
       {
         label: i18next.t("menuUiHandler:exportData"),
@@ -324,7 +322,7 @@ export default class MenuUiHandler extends MessageUiHandler {
             if (!res.ok) {
               console.error(`Log out failed (${res.status}: ${res.statusText})`);
             }
-            Utils.setCookie(Utils.sessionIdKey, "");
+            localStorage.setItem(Utils.sessionIdKey, "")
             updateUserInfo().then(() => this.scene.reset(true, true));
           });
         };

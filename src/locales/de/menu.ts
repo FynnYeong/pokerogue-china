@@ -35,6 +35,9 @@ export const menu: SimpleTranslationEntries = {
   "boyOrGirl": "Bist du ein Junge oder ein Mädchen?",
   "boy": "Junge",
   "girl": "Mädchen",
+  "selectServerAddress": "Bitte wählen Sie Ihren Server aus",
+  "serverAddress1": "Offizieller Server",
+  "serverAddress2": "China Server",
   "evolving": "Nanu?\n{{pokemonName}} entwickelt sich!",
   "stoppedEvolving": "Hm? {{pokemonName}} hat die Entwicklung \nabgebrochen.", // "Hm? Entwicklung wurde abgebrochen!" without naming the pokemon seems to be the original.
   "pauseEvolutionsQuestion": "Die Entwicklung von {{pokemonName}} vorübergehend pausieren?\nEntwicklungen können im Gruppenmenü wieder aktiviert werden.",

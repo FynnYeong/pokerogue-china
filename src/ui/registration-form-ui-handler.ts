@@ -91,7 +91,7 @@ export default class RegistrationFormUiHandler extends FormModalUiHandler {
                 })
                 .then(response => {
                   if (response.hasOwnProperty("token")) {
-                    Utils.setCookie(Utils.sessionIdKey, response.token);
+                    localStorage.setItem(Utils.sessionIdKey, response.token)
                     originalRegistrationAction();
                   } else {
                     onFail(response);

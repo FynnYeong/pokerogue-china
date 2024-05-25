@@ -70,7 +70,7 @@ export function initI18n(): void {
     return;
   }
   isInitialized = true;
-  let lang = "";
+  let lang = "zh_CN";
 
   if (localStorage.getItem("prLang")) {
     lang = localStorage.getItem("prLang");

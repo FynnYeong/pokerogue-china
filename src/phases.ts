@@ -75,10 +75,54 @@ export class LoginPhase extends Phase {
   start(): void {
     super.start();
 
-    const hasSession = !!Utils.getCookie(Utils.sessionIdKey);
+    if(window.plus){
+      this.updown()
+    }
 
+    const hasSession = !!localStorage.getItem(Utils.sessionIdKey);
+    this.scene.ui.setMode(Mode.MESSAGE);
+    if(!hasSession){
+      this.scene.ui.showText(i18next.t('menu:selectServerAddress'), null, () => {
+        this.scene.ui.setMode(Mode.OPTION_SELECT, {
+          options: [
+            // {
+            //   label: i18next.t('menu:serverAddress1'),
+            //   handler: () => {
+            //     localStorage.setItem('pokerogue:serverAdd', 'https://api.pokerogue.net');
+            //     localStorage.removeItem('pokerogue:offlineMode');
+            //     this.login();
+            //     return true;
+            //   }
+            // },
+            {
+              label: i18next.t('menu:serverAddress2'),
+              handler: () => {
+                localStorage.setItem('pokerogue:serverAdd', import.meta.env.VITE_SERVERURL);
+                localStorage.removeItem('pokerogue:offlineMode');
+                this.login();
+                return true;
+              }
+            },
+            {
+              label: i18next.t('menu:serverAddress3'),
+              handler: () => {
+                localStorage.setItem('pokerogue:offlineMode', 'yes');
+                this.login();
+                return true;
+              }
+            }
+          ]
+        });
+      });
+    }else{
+      this.login();
+    }
+  }
+
+  login():void {
+    const hasSession = !!localStorage.getItem(Utils.sessionIdKey);
     this.scene.ui.setMode(Mode.LOADING, { buttonActions: [] });
-    Utils.executeIf(bypassLogin || hasSession, updateUserInfo).then(response => {
+    Utils.executeIf(hasSession||localStorage.getItem("pokerogue:offlineMode")==='yes', updateUserInfo).then(response => {
       const success = response ? response[0] : false;
       const statusCode = response ? response[1] : null;
       if (!success) {
@@ -121,7 +165,7 @@ export class LoginPhase extends Phase {
         return null;
       } else {
         this.scene.gameData.loadSystem().then(success => {
-          if (success || bypassLogin) {
+          if (success || bypassLogin()) {
             this.end();
           } else {
             this.scene.ui.setMode(Mode.MESSAGE);
@@ -130,6 +174,67 @@ export class LoginPhase extends Phase {
         });
       }
     });
+  }
+
+  updown():void {
+    var wgtVer=null;  
+    var checkUrl=import.meta.env.VITE_VERSION_MAP_URL;  
+    if(checkUrl){
+      function plusReady(){  
+        // 获取本地应用资源版本号  
+        window.plus.runtime.getProperty(window.plus.runtime.appid,function(inf){  
+            wgtVer=inf.version;  
+        });  
+        }  
+        
+        plusReady();  
+     
+        function checkUpdate(){  
+          window.plus.nativeUI.showWaiting("检测更新...");  
+          var xhr=new XMLHttpRequest();  
+          xhr.onreadystatechange=function(){  
+            window.plus.nativeUI.closeWaiting();
+              switch(xhr.readyState){  
+                case 4:  
+                if(xhr.status==200){  
+                    var obj=xhr.responseText;  
+                    window.plus.nativeUI.closeWaiting();
+                    const newVerUrl = JSON.parse(obj||'{}')?.[wgtVer]
+                    
+                    if(wgtVer&&newVerUrl){  
+                      window.plus.nativeUI.showWaiting("新资源包下载中,请稍等...");  
+                      var dtask = window.plus.downloader.createDownload( newVerUrl, {method:"GET"}, function(d,status){  
+                        if ( status == 200 ) {   
+                          console.log( "Download wgtu success: " + d.filename );  
+                          window.plus.runtime.install(d.filename,{},function(){  
+                            window.plus.nativeUI.closeWaiting();  
+                            window.plus.nativeUI.alert("更新完成",function(){  
+                              window.plus.runtime.restart();  
+                            });  
+                          },function(e){  
+                            window.plus.nativeUI.closeWaiting();  
+                            alert("更新异常请联系管理员");  
+                          });  
+                        } else {  
+                          window.plus.nativeUI.closeWaiting();  
+                           alert( "更新异常请联系管理员" );   
+                        }   
+                      } );  
+                      dtask.start();
+                    }
+                }
+                break;  
+                default:  
+                break;  
+            }  
+        }  
+        xhr.open('GET',checkUrl);  
+        xhr.send();  
+        }
+    
+        checkUpdate()
+    }
+
   }
 
   end(): void {
@@ -343,7 +448,7 @@ export class TitlePhase extends Phase {
       };
 
       // If Online, calls seed fetch from db to generate daily run. If Offline, generates a daily run based on current date.
-      if (!Utils.isLocal) {
+      if (!bypassLogin()) {
         fetchDailyRunSeed().then(seed => {
           generateDaily(seed);
         }).catch(err => {
@@ -3939,7 +4044,7 @@ export class GameOverPhase extends BattlePhase {
     If Online, execute apiFetch as intended
     If Offline, execute offlineNewClear(), a localStorage implementation of newClear daily run checks */
     if (this.victory) {
-      if (!Utils.isLocal) {
+      if (!bypassLogin()) {
         Utils.apiFetch(`savedata/newclear?slot=${this.scene.sessionSlotId}`, true)
           .then(response => response.json())
           .then(newClear => doGameOver(newClear));

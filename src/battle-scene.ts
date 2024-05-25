@@ -58,7 +58,7 @@ import * as Overrides from "./overrides";
 import {InputsController} from "./inputs-controller";
 import {UiInputs} from "./ui-inputs";
 
-export const bypassLogin = import.meta.env.VITE_BYPASS_LOGIN === "1";
+export const bypassLogin = ()=> localStorage.getItem("pokerogue:offlineMode")==='yes';
 
 const DEBUG_RNG = false;
 
@@ -524,16 +524,29 @@ export default class BattleScene extends SceneBase {
       });
   }
 
-  cachedFetch(url: string, init?: RequestInit): Promise<Response> {
-    const manifest = this.game["manifest"];
-    if (manifest) {
-      const timestamp = manifest[`/${url.replace("./", "")}`];
-      if (timestamp) {
-        url += `?t=${timestamp}`;
-      }
-    }
-    return fetch(url, init);
-  }
+	fetchLocal(url: string, data?:any): Promise<Response> {
+		return new Promise(function(resolve, reject) {
+		  var xhr = new XMLHttpRequest
+		  xhr.onload = function() {
+			resolve(new Response(xhr.responseText, {status: xhr.status}))
+		  }
+		  xhr.onerror = function() {
+			reject(new TypeError('Local request failed'))
+		  }
+		  xhr.open('GET', url)
+		  xhr.send(data)
+		})
+	  }
+
+	cachedFetch(url: string, init?: RequestInit): Promise<Response> {
+		const manifest = this.game['manifest'];
+		if (manifest) {
+			const timestamp = manifest[`/${url.replace('./', '')}`];
+			if (timestamp)
+				url += `?t=${timestamp}`;
+		}
+		return this.fetchLocal(url, init);
+	}
 
   initStarterColors(): Promise<void> {
     return new Promise(resolve => {

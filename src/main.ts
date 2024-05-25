@@ -100,7 +100,7 @@ const startGame = () => {
   game.sound.pauseOnBlur = false;
 };
 
-fetch("/manifest.json")
+fetch("./manifest.json")
   .then(res => res.json())
   .then(jsonResponse => {
     startGame();

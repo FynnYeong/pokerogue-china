@@ -1,4 +1,4 @@
-import BattleScene from "../battle-scene";
+import BattleScene, { bypassLogin } from "../battle-scene";
 import { DailyRunScoreboard } from "./daily-run-scoreboard";
 import OptionSelectUiHandler from "./option-select-ui-handler";
 import { Mode } from "./ui";
@@ -62,7 +62,7 @@ export default class TitleUiHandler extends OptionSelectUiHandler {
     Utils.apiFetch("game/titlestats")
       .then(request => request.json())
       .then(stats => {
-        this.playerCountLabel.setText(`${stats.playerCount} ${i18next.t("menu:playersOnline")}`);
+        this.playerCountLabel.setText(bypassLogin()?i18next.t('menu:serverAddress3'):`${stats.playerCount} ${i18next.t("menu:playersOnline")}`);
         if (this.splashMessage === getBattleCountSplashMessage()) {
           this.splashMessageText.setText(getBattleCountSplashMessage().replace("{COUNT}", stats.battleCount.toLocaleString("en-US")));
         }

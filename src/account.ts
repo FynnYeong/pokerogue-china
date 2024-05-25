@@ -11,7 +11,7 @@ export const clientSessionId = Utils.randomString(32);
 
 export function updateUserInfo(): Promise<[boolean, integer]> {
   return new Promise<[boolean, integer]>(resolve => {
-    if (bypassLogin) {
+    if (bypassLogin()) {
       loggedInUser = { username: "Guest", lastSessionSlot: -1 };
       let lastSessionSlot = -1;
       for (let s = 0; s < 5; s++) {
@@ -40,7 +40,12 @@ export function updateUserInfo(): Promise<[boolean, integer]> {
       }
       return response.json();
     }).then(jsonResponse => {
-      loggedInUser = jsonResponse;
+      if(jsonResponse){
+        loggedInUser = jsonResponse;
+      }else if(!loggedInUser){
+        loggedInUser= { username: "Guest", lastSessionSlot: -1 }
+      }
+      
       resolve([ true, 200 ]);
     }).catch(err => {
       console.error(err);

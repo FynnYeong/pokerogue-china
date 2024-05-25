@@ -68,14 +68,14 @@ export function getDataTypeKey(dataType: GameDataType, slotId: integer = 0): str
   }
 }
 
-function encrypt(data: string, bypassLogin: boolean): string {
-  return (bypassLogin
+function encrypt(data: string, bypassLogin2: boolean): string {
+  return (bypassLogin2
     ? (data: string) => btoa(data)
     : (data: string) => AES.encrypt(data, saveKey))(data);
 }
 
-function decrypt(data: string, bypassLogin: boolean): string {
-  return (bypassLogin
+function decrypt(data: string, bypassLogin2: boolean): string {
+  return (bypassLogin2
     ? (data: string) => atob(data)
     : (data: string) => AES.decrypt(data, saveKey).toString(enc.Utf8))(data);
 }
@@ -290,9 +290,9 @@ export class GameData {
       const maxIntAttrValue = Math.pow(2, 31);
       const systemData = JSON.stringify(data, (k: any, v: any) => typeof v === "bigint" ? v <= maxIntAttrValue ? Number(v) : v.toString() : v);
 
-      localStorage.setItem(`data_${loggedInUser.username}`, encrypt(systemData, bypassLogin));
+      localStorage.setItem(`data_${loggedInUser.username}`, encrypt(systemData, bypassLogin()));
 
-      if (!bypassLogin) {
+      if (!bypassLogin()) {
         Utils.apiPost(`savedata/update?datatype=${GameDataType.SYSTEM}&clientSessionId=${clientSessionId}`, systemData, undefined, true)
           .then(response => response.text())
           .then(error => {
@@ -322,11 +322,11 @@ export class GameData {
     return new Promise<boolean>(resolve => {
       console.log("Client Session:", clientSessionId);
 
-      if (bypassLogin && !localStorage.getItem(`data_${loggedInUser.username}`)) {
+      if (bypassLogin() && !localStorage.getItem(`data_${loggedInUser.username}`)) {
         return resolve(false);
       }
 
-      if (!bypassLogin) {
+      if (!bypassLogin()) {
         Utils.apiFetch(`savedata/system?clientSessionId=${clientSessionId}`, true)
           .then(response => response.text())
           .then(response => {
@@ -346,7 +346,7 @@ export class GameData {
             this.initSystem(response, cachedSystem ? AES.decrypt(cachedSystem, saveKey).toString(enc.Utf8) : null).then(resolve);
           });
       } else {
-        this.initSystem(decrypt(localStorage.getItem(`data_${loggedInUser.username}`), bypassLogin)).then(resolve);
+        this.initSystem(decrypt(localStorage.getItem(`data_${loggedInUser.username}`), bypassLogin())).then(resolve);
       }
     });
   }
@@ -369,7 +369,7 @@ export class GameData {
 
         console.debug(systemData);
 
-        localStorage.setItem(`data_${loggedInUser.username}`, encrypt(systemDataStr, bypassLogin));
+        localStorage.setItem(`data_${loggedInUser.username}`, encrypt(systemDataStr, bypassLogin()));
 
         /*const versions = [ this.scene.game.config.gameVersion, data.gameVersion || '0.0.0' ];
 
@@ -518,7 +518,7 @@ export class GameData {
   }
 
   public async verify(): Promise<boolean> {
-    if (bypassLogin) {
+    if (bypassLogin()) {
       return true;
     }
 
@@ -536,7 +536,7 @@ export class GameData {
   }
 
   public clearLocalData(): void {
-    if (bypassLogin) {
+    if (bypassLogin()) {
       return;
     }
     localStorage.removeItem(`data_${loggedInUser.username}`);
@@ -651,7 +651,7 @@ export class GameData {
         }
       };
 
-      if (!bypassLogin && !localStorage.getItem(`sessionData${slotId ? slotId : ""}_${loggedInUser.username}`)) {
+      if (!bypassLogin() && !localStorage.getItem(`sessionData${slotId ? slotId : ""}_${loggedInUser.username}`)) {
         Utils.apiFetch(`savedata/session?slot=${slotId}&clientSessionId=${clientSessionId}`, true)
           .then(response => response.text())
           .then(async response => {
@@ -660,14 +660,14 @@ export class GameData {
               return resolve(null);
             }
 
-            localStorage.setItem(`sessionData${slotId ? slotId : ""}_${loggedInUser.username}`, encrypt(response, bypassLogin));
+            localStorage.setItem(`sessionData${slotId ? slotId : ""}_${loggedInUser.username}`, encrypt(response, bypassLogin()));
 
             await handleSessionData(response);
           });
       } else {
         const sessionData = localStorage.getItem(`sessionData${slotId ? slotId : ""}_${loggedInUser.username}`);
         if (sessionData) {
-          await handleSessionData(decrypt(sessionData, bypassLogin));
+          await handleSessionData(decrypt(sessionData, bypassLogin()));
         } else {
           return resolve(null);
         }
@@ -784,7 +784,7 @@ export class GameData {
 
   deleteSession(slotId: integer): Promise<boolean> {
     return new Promise<boolean>(resolve => {
-      if (bypassLogin) {
+      if (bypassLogin()) {
         localStorage.removeItem(`sessionData${this.scene.sessionSlotId ? this.scene.sessionSlotId : ""}_${loggedInUser.username}`);
         return resolve(true);
       }
@@ -847,7 +847,7 @@ export class GameData {
 
   tryClearSession(scene: BattleScene, slotId: integer): Promise<[success: boolean, newClear: boolean]> {
     return new Promise<[boolean, boolean]>(resolve => {
-      if (bypassLogin) {
+      if (bypassLogin()) {
         localStorage.removeItem(`sessionData${slotId ? slotId : ""}_${loggedInUser.username}`);
         return resolve([true, true]);
       }
@@ -933,10 +933,10 @@ export class GameData {
         if (sync) {
           this.scene.ui.savingIcon.show();
         }
-        const sessionData = useCachedSession ? this.parseSessionData(decrypt(localStorage.getItem(`sessionData${scene.sessionSlotId ? scene.sessionSlotId : ""}_${loggedInUser.username}`), bypassLogin)) : this.getSessionSaveData(scene);
+        const sessionData = useCachedSession ? this.parseSessionData(decrypt(localStorage.getItem(`sessionData${scene.sessionSlotId ? scene.sessionSlotId : ""}_${loggedInUser.username}`), bypassLogin())) : this.getSessionSaveData(scene);
 
         const maxIntAttrValue = Math.pow(2, 31);
-        const systemData = useCachedSystem ? this.parseSystemData(decrypt(localStorage.getItem(`data_${loggedInUser.username}`), bypassLogin)) : this.getSystemSaveData();
+        const systemData = useCachedSystem ? this.parseSystemData(decrypt(localStorage.getItem(`data_${loggedInUser.username}`), bypassLogin())) : this.getSystemSaveData();
 
         const request = {
           system: systemData,
@@ -945,13 +945,13 @@ export class GameData {
           clientSessionId: clientSessionId
         };
 
-        localStorage.setItem(`data_${loggedInUser.username}`, encrypt(JSON.stringify(systemData, (k: any, v: any) => typeof v === "bigint" ? v <= maxIntAttrValue ? Number(v) : v.toString() : v), bypassLogin));
+        localStorage.setItem(`data_${loggedInUser.username}`, encrypt(JSON.stringify(systemData, (k: any, v: any) => typeof v === "bigint" ? v <= maxIntAttrValue ? Number(v) : v.toString() : v), bypassLogin()));
 
-        localStorage.setItem(`sessionData${scene.sessionSlotId ? scene.sessionSlotId : ""}_${loggedInUser.username}`, encrypt(JSON.stringify(sessionData), bypassLogin));
+        localStorage.setItem(`sessionData${scene.sessionSlotId ? scene.sessionSlotId : ""}_${loggedInUser.username}`, encrypt(JSON.stringify(sessionData), bypassLogin()));
 
         console.debug("Session data saved");
 
-        if (!bypassLogin && sync) {
+        if (!bypassLogin() && sync) {
           Utils.apiPost("savedata/updateall", JSON.stringify(request, (k: any, v: any) => typeof v === "bigint" ? v <= maxIntAttrValue ? Number(v) : v.toString() : v), undefined, true)
             .then(response => response.text())
             .then(error => {
@@ -993,13 +993,44 @@ export class GameData {
         }
         const encryptedData = AES.encrypt(dataStr, saveKey);
         const blob = new Blob([ encryptedData.toString() ], {type: "text/json"});
-        const link = document.createElement("a");
-        link.href = window.URL.createObjectURL(blob);
-        link.download = `${dataKey}.prsv`;
-        link.click();
-        link.remove();
+
+
+        if(window.plus){
+                  
+        // 获取本地公共下载目录
+        var downloadDir = '_downloads/';
+        
+        // 生成一个随机文件名
+        var fileName =  `${dataKey}.prsv`;
+        
+        // 拼接完整的文件路径
+        var filePath = downloadDir + fileName;
+
+        // 将 Blob 文件写入本地文件
+        window.plus.io.requestFileSystem(window.plus.io.PRIVATE_DOC, function(fs) {
+            fs.root.getFile(filePath, { create: true }, function(fileEntry) {
+                fileEntry.createWriter(function(fileWriter) {
+                    window.plus.nativeUI.toast(`下载成功：Android/data/plus.H507852F9/downloads/${dataKey}.prsv`, {
+                      duration: 'short' // 提示持续时间（short短，long长）
+                  });
+                  fileWriter.write(blob);
+                }, function(e) {
+                    console.error("File write error: " + e.message);
+                });
+            }, function(e) {
+                console.error("Get file entry error: " + e.message);
+            });
+        });
+        }else{
+          const link = document.createElement("a");
+          link.href = window.URL.createObjectURL(blob);
+          link.download = `${dataKey}.prsv`;
+          link.click();
+          link.remove();
+        }
+   
       };
-      if (!bypassLogin && dataType < GameDataType.SETTINGS) {
+      if (!bypassLogin() && dataType < GameDataType.SETTINGS) {
         Utils.apiFetch(`savedata/${dataType === GameDataType.SYSTEM ? "system" : "session"}?clientSessionId=${clientSessionId}${dataType === GameDataType.SESSION ? `&slot=${slotId}` : ""}`, true)
           .then(response => response.text())
           .then(response => {
@@ -1015,7 +1046,7 @@ export class GameData {
       } else {
         const data = localStorage.getItem(dataKey);
         if (data) {
-          handleData(decrypt(data, bypassLogin));
+          handleData(decrypt(data, bypassLogin()));
         }
         resolve(!!data);
       }
@@ -1025,100 +1056,122 @@ export class GameData {
   public importData(dataType: GameDataType, slotId: integer = 0): void {
     const dataKey = `${getDataTypeKey(dataType, slotId)}_${loggedInUser.username}`;
 
-    let saveFile: any = document.getElementById("saveFile");
-    if (saveFile) {
-      saveFile.remove();
-    }
 
-    saveFile = document.createElement("input");
-    saveFile.id = "saveFile";
-    saveFile.type = "file";
-    saveFile.accept = ".prsv";
-    saveFile.style.display = "none";
-    saveFile.addEventListener("change",
-      e => {
-        const reader = new FileReader();
 
-        reader.onload = (_ => {
-          return e => {
-            let dataStr = AES.decrypt(e.target.result.toString(), saveKey).toString(enc.Utf8);
-            let valid = false;
-            try {
-              switch (dataType) {
-              case GameDataType.SYSTEM:
-                dataStr = this.convertSystemDataStr(dataStr);
-                const systemData = this.parseSystemData(dataStr);
-                valid = !!systemData.dexData && !!systemData.timestamp;
-                break;
-              case GameDataType.SESSION:
-                const sessionData = this.parseSessionData(dataStr);
-                valid = !!sessionData.party && !!sessionData.enemyParty && !!sessionData.timestamp;
-                break;
-              case GameDataType.SETTINGS:
-              case GameDataType.TUTORIALS:
-                valid = true;
-                break;
-              }
-            } catch (ex) {
-              console.error(ex);
-            }
+    function hanldeImport (e) {
+      const reader = new FileReader();
 
-            let dataName: string;
+      reader.onload = (_ => {
+        return e => {
+          let dataStr = AES.decrypt(e.target.result.toString(), saveKey).toString(enc.Utf8);
+          let valid = false;
+          try {
             switch (dataType) {
             case GameDataType.SYSTEM:
-              dataName = "save";
+              dataStr = this.convertSystemDataStr(dataStr);
+              const systemData = this.parseSystemData(dataStr);
+              valid = !!systemData.dexData && !!systemData.timestamp;
               break;
             case GameDataType.SESSION:
-              dataName = "session";
+              const sessionData = this.parseSessionData(dataStr);
+              valid = !!sessionData.party && !!sessionData.enemyParty && !!sessionData.timestamp;
               break;
             case GameDataType.SETTINGS:
-              dataName = "settings";
-              break;
             case GameDataType.TUTORIALS:
-              dataName = "tutorials";
+              valid = true;
               break;
             }
+          } catch (ex) {
+            console.error(ex);
+          }
 
-            const displayError = (error: string) => this.scene.ui.showText(error, null, () => this.scene.ui.showText(null, 0), Utils.fixedInt(1500));
+          let dataName: string;
+          switch (dataType) {
+          case GameDataType.SYSTEM:
+            dataName = "save";
+            break;
+          case GameDataType.SESSION:
+            dataName = "session";
+            break;
+          case GameDataType.SETTINGS:
+            dataName = "settings";
+            break;
+          case GameDataType.TUTORIALS:
+            dataName = "tutorials";
+            break;
+          }
 
-            if (!valid) {
-              return this.scene.ui.showText(`Your ${dataName} data could not be loaded. It may be corrupted.`, null, () => this.scene.ui.showText(null, 0), Utils.fixedInt(1500));
-            }
-            this.scene.ui.revertMode();
-            this.scene.ui.showText(`Your ${dataName} data will be overridden and the page will reload. Proceed?`, null, () => {
-              this.scene.ui.setOverlayMode(Mode.CONFIRM, () => {
-                localStorage.setItem(dataKey, encrypt(dataStr, bypassLogin));
+          const displayError = (error: string) => this.scene.ui.showText(error, null, () => this.scene.ui.showText(null, 0), Utils.fixedInt(1500));
 
-                if (!bypassLogin && dataType < GameDataType.SETTINGS) {
-                  updateUserInfo().then(success => {
-                    if (!success) {
-                      return displayError(`Could not contact the server. Your ${dataName} data could not be imported.`);
-                    }
-                    Utils.apiPost(`savedata/update?datatype=${dataType}${dataType === GameDataType.SESSION ? `&slot=${slotId}` : ""}&trainerId=${this.trainerId}&secretId=${this.secretId}&clientSessionId=${clientSessionId}`, dataStr, undefined, true)
-                      .then(response => response.text())
-                      .then(error => {
-                        if (error) {
-                          console.error(error);
-                          return displayError(`An error occurred while updating ${dataName} data. Please contact the administrator.`);
-                        }
-                        window.location = window.location;
-                      });
-                  });
-                } else {
-                  window.location = window.location;
-                }
-              }, () => {
-                this.scene.ui.revertMode();
-                this.scene.ui.showText(null, 0);
-              }, false, -98);
+          if (!valid) {
+            return this.scene.ui.showText(`Your ${dataName} data could not be loaded. It may be corrupted.`, null, () => this.scene.ui.showText(null, 0), Utils.fixedInt(1500));
+          }
+          this.scene.ui.revertMode();
+          this.scene.ui.showText(`Your ${dataName} data will be overridden and the page will reload. Proceed?`, null, () => {
+            this.scene.ui.setOverlayMode(Mode.CONFIRM, () => {
+              localStorage.setItem(dataKey, encrypt(dataStr, bypassLogin()));
+
+              if (!bypassLogin() && dataType < GameDataType.SETTINGS) {
+                updateUserInfo().then(success => {
+                  if (!success) {
+                    return displayError(`Could not contact the server. Your ${dataName} data could not be imported.`);
+                  }
+                  Utils.apiPost(`savedata/update?datatype=${dataType}${dataType === GameDataType.SESSION ? `&slot=${slotId}` : ""}&trainerId=${this.trainerId}&secretId=${this.secretId}&clientSessionId=${clientSessionId}`, dataStr, undefined, true)
+                    .then(response => response.text())
+                    .then(error => {
+                      if (error) {
+                        console.error(error);
+                        return displayError(`An error occurred while updating ${dataName} data. Please contact the administrator.`);
+                      }
+                      window.location = window.location;
+                    });
+                });
+              } else {
+                window.location = window.location;
+              }
+            }, () => {
+              this.scene.ui.revertMode();
+              this.scene.ui.showText(null, 0);
+            }, false, -98);
+          });
+        };
+      })((e.target as any).files[0]);
+
+      reader.readAsText((e.target as any).files[0]);
+    }
+
+    if(window.plus){
+      window.plus.gallery.pick(function(path) {
+        window.plus.io.resolveLocalFileSystemURL(path, function(entry) {
+            entry.file(function(file) {
+                var reader = new plus.io.FileReader();
+                reader.onloadend = hanldeImport;
+                reader.readAsText(file, 'utf-8');
+            }, function(e) {
+                console.log("读取文件失败：" + e.message);
             });
-          };
-        })((e.target as any).files[0]);
-
-        reader.readAsText((e.target as any).files[0]);
+        }, function(e) {
+            console.log("获取文件失败：" + e.message);
+        });
+    });
+    }else{
+      let saveFile: any = document.getElementById("saveFile");
+      if (saveFile) {
+        saveFile.remove();
       }
-    );
-    saveFile.click();
+
+      saveFile = document.createElement("input");
+      saveFile.id = "saveFile";
+      saveFile.type = "file";
+      saveFile.accept = ".prsv";
+      saveFile.style.display = "none";
+      saveFile.addEventListener("change",
+        hanldeImport
+      );
+      saveFile.click();
+    }
+
+
     /*(this.scene.plugins.get('rexfilechooserplugin') as FileChooserPlugin).open({ accept: '.prsv' })
       .then(result => {
     });*/

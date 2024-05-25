@@ -6,6 +6,7 @@ export default defineConfig(({ mode }) => {
 		plugins: [/*fs()*/],
 		server: { host: '0.0.0.0', port: 8000 },
 		clearScreen: false,
+		base:'./',
 		build: {
 			minify: 'esbuild',
 			sourcemap: false
