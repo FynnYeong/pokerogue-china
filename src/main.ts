@@ -100,6 +100,22 @@ const startGame = () => {
   game.sound.pauseOnBlur = false;
 };
 
+window.onerror = function(message, source, lineno, colno, error) {
+  console.error("Error:", message, "at", source, "line:", lineno, "column:", colno, "error:", error);
+  // 在这里可以进行异常处理，例如上报错误信息到服务器
+};
+
+window.addEventListener('unhandledrejection', function(event) {
+  // 在这里处理未处理的 Promise 拒绝
+  console.error('Unhandled Promise Rejection:', event.reason);
+});
+
+window.addEventListener('error', function(event) {
+  // 在这里处理全局的 JavaScript 错误
+  console.error('Global JavaScript Error:', event.error);
+});
+
+
 fetch("./manifest.json")
   .then(res => res.json())
   .then(jsonResponse => {
@@ -111,3 +127,4 @@ fetch("./manifest.json")
   });
 
 export default game;
+

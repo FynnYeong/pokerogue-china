@@ -535,7 +535,7 @@ export default class BattleScene extends SceneBase {
 			resolve(new Response(xhr.responseText, {status: xhr.status}))
 		  }
 		  xhr.onerror = function() {
-			reject(new TypeError('Local request failed'))
+        resolve(new Response(null, {status: 500}))
 		  }
 		  xhr.open('GET', url)
 		  xhr.send(data)
@@ -543,13 +543,17 @@ export default class BattleScene extends SceneBase {
 	  }
 
 	cachedFetch(url: string, init?: RequestInit): Promise<Response> {
-		const manifest = this.game['manifest'];
-		if (manifest) {
-			const timestamp = manifest[`/${url.replace('./', '')}`];
-			if (timestamp)
-				url += `?t=${timestamp}`;
-		}
-		return this.fetchLocal(url, init);
+    try {
+      const manifest = this.game['manifest'];
+      if (manifest) {
+        const timestamp = manifest[`/${url.replace('./', '')}`];
+        if (timestamp)
+          url += `?t=${timestamp}`;
+      }
+      return this.fetchLocal(url, init);
+    } catch (error) {
+      //
+    }
 	}
 
   initStarterColors(): Promise<void> {

@@ -452,9 +452,14 @@ export function initCommonAnims(scene: BattleScene): Promise<void> {
     const commonAnimFetches = [];
     for (let ca = 0; ca < commonAnimIds.length; ca++) {
       const commonAnimId = commonAnimIds[ca];
-      commonAnimFetches.push(scene.cachedFetch(`./battle-anims/common-${commonAnimNames[ca].toLowerCase().replace(/\_/g, "-")}.json`)
+      try {
+        commonAnimFetches.push(scene.cachedFetch(`./battle-anims/common-${commonAnimNames[ca].toLowerCase().replace(/\_/g, "-")}.json`)
         .then(response => response.json())
         .then(cas => commonAnims.set(commonAnimId, new AnimConfig(cas))));
+      } catch (error) {
+        //
+      }
+
     }
     Promise.allSettled(commonAnimFetches).then(() => resolve());
   });
