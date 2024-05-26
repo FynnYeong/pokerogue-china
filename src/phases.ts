@@ -191,7 +191,6 @@ export class LoginPhase extends Phase {
         plusReady();  
      
         function checkUpdate(){  
-          window.plus.nativeUI.showWaiting("检测更新...");  
           var xhr=new XMLHttpRequest();  
           xhr.onreadystatechange=function(){  
             window.plus.nativeUI.closeWaiting();
@@ -203,21 +202,23 @@ export class LoginPhase extends Phase {
                     const newVerUrl = JSON.parse(obj||'{}')?.[wgtVer]
                     
                     if(wgtVer&&newVerUrl){  
-                      window.plus.nativeUI.showWaiting("新资源包下载中,请稍等...");  
+                      window.plus.nativeUI.toast(`新资源包后台下载中,请稍等...`, {
+                        duration: 'short' // 提示持续时间（short短，long长）
+                    });  
                       var dtask = window.plus.downloader.createDownload( newVerUrl, {method:"GET"}, function(d,status){  
                         if ( status == 200 ) {   
                           console.log( "Download wgtu success: " + d.filename );  
                           window.plus.runtime.install(d.filename,{},function(){  
-                            window.plus.nativeUI.closeWaiting();  
-                            window.plus.nativeUI.alert("更新完成",function(){  
-                              window.plus.runtime.restart();  
-                            });  
+                            window.plus.nativeUI.toast(`更新完成，20s后将自动刷新页面，请及时保存`, {
+                              duration: 'short' // 提示持续时间（short短，long长）
+                          });  
+                          setTimeout(() => {
+                            window.plus.runtime.restart();  
+                          }, 20000);
                           },function(e){  
-                            window.plus.nativeUI.closeWaiting();  
                             alert("更新异常请联系管理员");  
                           });  
                         } else {  
-                          window.plus.nativeUI.closeWaiting();  
                            alert( "更新异常请联系管理员" );   
                         }   
                       } );  
@@ -382,7 +383,7 @@ export class TitlePhase extends Phase {
     this.scene.gameData.loadSession(this.scene, slotId, slotId === -1 ? this.lastSessionData : null).then((success: boolean) => {
       if (success) {
         this.loaded = true;
-        this.scene.ui.showText(i18next.t("menu:sessionSuccess"), null, () => this.end());
+        this.scene.ui.showText(`${i18next.t("menu:sessionSuccess")}   (f:${import.meta?.env?.VITE_VESTION_F||'dev'} b:${this.scene?.game?.config?.gameVersion||'dev'})`, null, () => this.end());
       } else {
         this.end();
       }

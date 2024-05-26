@@ -1013,7 +1013,7 @@ export class GameData {
                     window.plus.nativeUI.toast(`下载成功：Android/data/plus.H507852F9/downloads/${dataKey}.prsv`, {
                       duration: 'short' // 提示持续时间（short短，long长）
                   });
-                  fileWriter.write(blob);
+                  fileWriter.write(encryptedData.toString());
                 }, function(e) {
                     console.error("File write error: " + e.message);
                 });
