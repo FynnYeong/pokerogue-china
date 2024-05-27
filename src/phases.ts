@@ -208,13 +208,10 @@ export class LoginPhase extends Phase {
                       var dtask = window.plus.downloader.createDownload( newVerUrl, {method:"GET"}, function(d,status){  
                         if ( status == 200 ) {   
                           console.log( "Download wgtu success: " + d.filename );  
-                          window.plus.runtime.install(d.filename,{},function(){  
-                            window.plus.nativeUI.toast(`更新完成，20s后将自动刷新页面，请及时保存`, {
-                              duration: 'short' // 提示持续时间（short短，long长）
-                          });  
-                          setTimeout(() => {
-                            window.plus.runtime.restart();  
-                          }, 20000);
+                          window.plus.runtime.install(d.filename,{ force:true },function(){  
+                            window.plus.nativeUI.alert("更新完成,请及时重启",function(){  
+                              // window.plus.runtime.restart();  
+                            });  
                           },function(e){  
                             alert("更新异常请联系管理员");  
                           });  
