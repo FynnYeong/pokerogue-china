@@ -632,9 +632,12 @@ export class SelectStarterPhase extends Phase {
           if (!i && Overrides.STARTER_SPECIES_OVERRIDE) {
             starterFormIndex = Overrides.STARTER_FORM_OVERRIDE;
           }
-          const starterGender = starter.species.malePercent !== null
+          let starterGender = starter.species.malePercent !== null
             ? !starterProps.female ? Gender.MALE : Gender.FEMALE
             : Gender.GENDERLESS;
+          if (Overrides.GENDER_OVERRIDE !== null) {
+            starterGender = Overrides.GENDER_OVERRIDE;
+          }
           const starterIvs = this.scene.gameData.dexData[starter.species.speciesId].ivs.slice(0);
           const starterPokemon = this.scene.addPlayerPokemon(starter.species, this.scene.gameMode.getStartingLevel(), starter.abilityIndex, starterFormIndex, starterGender, starterProps.shiny, starterProps.variant, starterIvs, starter.nature);
           starterPokemon.tryPopulateMoveset(starter.moveset);
@@ -2415,6 +2418,12 @@ export class BattleEndPhase extends BattlePhase {
       this.scene.gameData.gameStats.highestEndlessWave = this.scene.currentBattle.waveIndex + 1;
     }
 
+    // Endless graceful end
+    if (this.scene.gameMode.isEndless && this.scene.currentBattle.waveIndex >= 5850) {
+      this.scene.clearPhaseQueue();
+      this.scene.unshiftPhase(new GameOverPhase(this.scene, true));
+    }
+
     for (const pokemon of this.scene.getField()) {
       if (pokemon) {
         pokemon.resetBattleSummonData();
@@ -3733,6 +3742,9 @@ export class VictoryPhase extends PokemonPhase {
         if (partyMember.pokerus) {
           expMultiplier *= 1.5;
         }
+        if (Overrides.XP_MULTIPLIER_OVERRIDE !== null) {
+          expMultiplier = Overrides.XP_MULTIPLIER_OVERRIDE;
+        }
         const pokemonExp = new Utils.NumberHolder(expValue * expMultiplier);
         this.scene.applyModifiers(PokemonExpBoosterModifier, true, partyMember, pokemonExp);
         partyMemberExp.push(Math.floor(pokemonExp.value));
@@ -3984,7 +3996,9 @@ export class GameOverPhase extends BattlePhase {
       this.victory = true;
     }
 
-    if (this.victory || !this.scene.enableRetries) {
+    if (this.victory && this.scene.gameMode.isEndless) {
+      this.scene.ui.showDialogue(i18next.t("PGMmiscDialogue:ending_endless"), i18next.t("PGMmiscDialogue:ending_name"), 0, () => this.handleGameOver());
+    } else if (this.victory || !this.scene.enableRetries) {
       this.handleGameOver();
     } else {
       this.scene.ui.showText("Would you like to retry from the start of the battle?", null, () => {
@@ -5105,7 +5119,7 @@ export class EggLapsePhase extends Phase {
     super.start();
 
     const eggsToHatch: Egg[] = this.scene.gameData.eggs.filter((egg: Egg) => {
-      return --egg.hatchWaves < 1;
+      return Overrides.IMMEDIATE_HATCH_EGGS_OVERRIDE ? true : --egg.hatchWaves < 1;
     });
 
     if (eggsToHatch.length) {

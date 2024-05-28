@@ -56,6 +56,7 @@ import { Localizable } from "./plugins/i18n";
 import * as Overrides from "./overrides";
 import {InputsController} from "./inputs-controller";
 import {UiInputs} from "./ui-inputs";
+import { MoneyFormat } from "./enums/money-format";
 import { NewArenaEvent } from "./battle-scene-events";
 
 export const bypassLogin = ()=> localStorage.getItem("pokerogue:offlineMode")==='yes';
@@ -92,6 +93,7 @@ export default class BattleScene extends SceneBase {
   public showLevelUpStats: boolean = true;
   public enableTutorials: boolean = import.meta.env.VITE_BYPASS_TUTORIAL === "1";
   public enableRetries: boolean = false;
+  public moneyFormat: MoneyFormat = MoneyFormat.NORMAL;
   public uiTheme: UiTheme = UiTheme.DEFAULT;
   public windowType: integer = 0;
   public experimentalSprites: boolean = false;
@@ -672,6 +674,9 @@ export default class BattleScene extends SceneBase {
       species = getPokemonSpecies(Overrides.OPP_SPECIES_OVERRIDE);
     }
     const pokemon = new EnemyPokemon(this, species, level, trainerSlot, boss, dataSource);
+    if (Overrides.OPP_GENDER_OVERRIDE !== null) {
+      pokemon.gender = Overrides.OPP_GENDER_OVERRIDE;
+    }
     overrideModifiers(this, false);
     overrideHeldItems(this, pokemon, false);
     if (boss && !dataSource) {
@@ -1082,6 +1087,10 @@ export default class BattleScene extends SceneBase {
     case Species.TATSUGIRI:
     case Species.PALDEA_TAUROS:
       return Utils.randSeedInt(species.forms.length);
+    case Species.PIKACHU:
+      return Utils.randSeedInt(8);
+    case Species.EEVEE:
+      return Utils.randSeedInt(2);
     case Species.GRENINJA:
       return Utils.randSeedInt(2);
     case Species.ZYGARDE:
@@ -1273,9 +1282,16 @@ export default class BattleScene extends SceneBase {
     this.biomeWaveText.setVisible(true);
   }
 
-  updateMoneyText(): void {
-    this.moneyText.setText(`₽${Utils.formatLargeNumber(this.money, 1000)}`);
-    this.moneyText.setVisible(true);
+  updateMoneyText(forceVisible: boolean = true): void {
+    if (this.money === undefined) {
+      return;
+    }
+    const formattedMoney =
+			this.moneyFormat === MoneyFormat.ABBREVIATED ? Utils.formatFancyLargeNumber(this.money, 3) : this.money.toLocaleString();
+    this.moneyText.setText(`₽${formattedMoney}`);
+    if (forceVisible) {
+      this.moneyText.setVisible(true);
+    }
   }
 
   updateScoreText(): void {
@@ -1294,7 +1310,7 @@ export default class BattleScene extends SceneBase {
     if (luckValue < 14) {
       this.luckText.setTint(getLuckTextTint(luckValue));
     } else {
-      this.luckText.setTint(0x83a55a, 0xee384a, 0x5271cd, 0x7b487b);
+      this.luckText.setTint(0xffef5c, 0x47ff69, 0x6b6bff, 0xff6969);
     }
     this.luckLabelText.setX((this.game.canvas.width / 6) - 2 - (this.luckText.displayWidth + 2));
     this.tweens.add({
