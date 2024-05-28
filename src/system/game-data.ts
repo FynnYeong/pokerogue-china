@@ -1057,95 +1057,85 @@ export class GameData {
     const dataKey = `${getDataTypeKey(dataType, slotId)}_${loggedInUser.username}`;
 
 
-
-    function hanldeImport (e) {
-      const reader = new FileReader();
-
-      reader.onload = (_ => {
-        return e => {
-          let dataStr = AES.decrypt(e.target.result.toString(), saveKey).toString(enc.Utf8);
-          let valid = false;
-          try {
-            switch (dataType) {
-            case GameDataType.SYSTEM:
-              dataStr = this.convertSystemDataStr(dataStr);
-              const systemData = this.parseSystemData(dataStr);
-              valid = !!systemData.dexData && !!systemData.timestamp;
-              break;
-            case GameDataType.SESSION:
-              const sessionData = this.parseSessionData(dataStr);
-              valid = !!sessionData.party && !!sessionData.enemyParty && !!sessionData.timestamp;
-              break;
-            case GameDataType.SETTINGS:
-            case GameDataType.TUTORIALS:
-              valid = true;
-              break;
-            }
-          } catch (ex) {
-            console.error(ex);
-          }
-
-          let dataName: string;
-          switch (dataType) {
-          case GameDataType.SYSTEM:
-            dataName = "save";
-            break;
-          case GameDataType.SESSION:
-            dataName = "session";
-            break;
-          case GameDataType.SETTINGS:
-            dataName = "settings";
-            break;
-          case GameDataType.TUTORIALS:
-            dataName = "tutorials";
-            break;
-          }
-
-          const displayError = (error: string) => this.scene.ui.showText(error, null, () => this.scene.ui.showText(null, 0), Utils.fixedInt(1500));
-
-          if (!valid) {
-            return this.scene.ui.showText(`Your ${dataName} data could not be loaded. It may be corrupted.`, null, () => this.scene.ui.showText(null, 0), Utils.fixedInt(1500));
-          }
-          this.scene.ui.revertMode();
-          this.scene.ui.showText(`Your ${dataName} data will be overridden and the page will reload. Proceed?`, null, () => {
-            this.scene.ui.setOverlayMode(Mode.CONFIRM, () => {
-              localStorage.setItem(dataKey, encrypt(dataStr, bypassLogin()));
-
-              if (!bypassLogin() && dataType < GameDataType.SETTINGS) {
-                updateUserInfo().then(success => {
-                  if (!success) {
-                    return displayError(`Could not contact the server. Your ${dataName} data could not be imported.`);
-                  }
-                  Utils.apiPost(`savedata/update?datatype=${dataType}${dataType === GameDataType.SESSION ? `&slot=${slotId}` : ""}&trainerId=${this.trainerId}&secretId=${this.secretId}&clientSessionId=${clientSessionId}`, dataStr, undefined, true)
-                    .then(response => response.text())
-                    .then(error => {
-                      if (error) {
-                        console.error(error);
-                        return displayError(`An error occurred while updating ${dataName} data. Please contact the administrator.`);
-                      }
-                      window.location = window.location;
-                    });
-                });
-              } else {
-                window.location = window.location;
-              }
-            }, () => {
-              this.scene.ui.revertMode();
-              this.scene.ui.showText(null, 0);
-            }, false, -98);
-          });
-        };
-      })((e.target as any).files[0]);
-
-      reader.readAsText((e.target as any).files[0]);
-    }
-
+    const that = this
     if(window.plus){
-      window.plus.gallery.pick(function(path) {
-        window.plus.io.resolveLocalFileSystemURL(path, function(entry) {
+      // window.plus.gallery.pick(function(path) {
+        window.plus.io.resolveLocalFileSystemURL('_downloads/1.prsv', function(entry) {
             entry.file(function(file) {
                 var reader = new plus.io.FileReader();
-                reader.onloadend = hanldeImport;
+                reader.onloadend = (e)=>{
+                  let dataStr = AES.decrypt(e.target.result.toString(), saveKey).toString(enc.Utf8);
+                  let valid = false;
+                  try {
+                    switch (dataType) {
+                    case GameDataType.SYSTEM:
+                      dataStr = that.convertSystemDataStr(dataStr);
+                      const systemData = that.parseSystemData(dataStr);
+                      valid = !!systemData.dexData && !!systemData.timestamp;
+                      break;
+                    case GameDataType.SESSION:
+                      const sessionData = that.parseSessionData(dataStr);
+                      valid = !!sessionData.party && !!sessionData.enemyParty && !!sessionData.timestamp;
+                      break;
+                    case GameDataType.SETTINGS:
+                    case GameDataType.TUTORIALS:
+                      valid = true;
+                      break;
+                    }
+                  } catch (ex) {
+                    console.error(ex);
+                  }
+        
+                  let dataName: string;
+                  switch (dataType) {
+                  case GameDataType.SYSTEM:
+                    dataName = "save";
+                    break;
+                  case GameDataType.SESSION:
+                    dataName = "session";
+                    break;
+                  case GameDataType.SETTINGS:
+                    dataName = "settings";
+                    break;
+                  case GameDataType.TUTORIALS:
+                    dataName = "tutorials";
+                    break;
+                  }
+        
+                  const displayError = (error: string) => that.scene.ui.showText(error, null, () => that.scene.ui.showText(null, 0), Utils.fixedInt(1500));
+        
+                  if (!valid) {
+                    return that.scene.ui.showText(`无法加载您的 ${dataName} 数据。 它可能已损坏`, null, () => that.scene.ui.showText(null, 0), Utils.fixedInt(1500));
+                  }
+                  that.scene.ui.revertMode();
+                  that.scene.ui.showText(`Your ${dataName} 数据将被覆盖并且页面将重新加载。 继续？`, null, () => {
+                    that.scene.ui.setOverlayMode(Mode.CONFIRM, () => {
+                      localStorage.setItem(dataKey, encrypt(dataStr, bypassLogin()));
+        
+                      if (!bypassLogin() && dataType < GameDataType.SETTINGS) {
+                        updateUserInfo().then(success => {
+                          if (!success) {
+                            return displayError(`Could not contact the server. Your ${dataName} data could not be imported.`);
+                          }
+                          Utils.apiPost(`savedata/update?datatype=${dataType}${dataType === GameDataType.SESSION ? `&slot=${slotId}` : ""}&trainerId=${that.trainerId}&secretId=${that.secretId}&clientSessionId=${clientSessionId}`, dataStr, undefined, true)
+                            .then(response => response.text())
+                            .then(error => {
+                              if (error) {
+                                console.error(error);
+                                return displayError(`An error occurred while updating ${dataName} data. Please contact the administrator.`);
+                              }
+                              window.location = window.location;
+                            });
+                        });
+                      } else {
+                        window.location = window.location;
+                      }
+                    }, () => {
+                      that.scene.ui.revertMode();
+                      that.scene.ui.showText(null, 0);
+                    }, false, -98);
+                  });
+                };
                 reader.readAsText(file, 'utf-8');
             }, function(e) {
                 console.log("读取文件失败：" + e.message);
@@ -1153,23 +1143,24 @@ export class GameData {
         }, function(e) {
             console.log("获取文件失败：" + e.message);
         });
-    });
-    }else{
-      let saveFile: any = document.getElementById("saveFile");
-      if (saveFile) {
-        saveFile.remove();
-      }
-
-      saveFile = document.createElement("input");
-      saveFile.id = "saveFile";
-      saveFile.type = "file";
-      saveFile.accept = ".prsv";
-      saveFile.style.display = "none";
-      saveFile.addEventListener("change",
-        hanldeImport
-      );
-      saveFile.click();
+    // });
     }
+    // else{
+    //   let saveFile: any = document.getElementById("saveFile");
+    //   if (saveFile) {
+    //     saveFile.remove();
+    //   }
+
+    //   saveFile = document.createElement("input");
+    //   saveFile.id = "saveFile";
+    //   saveFile.type = "file";
+    //   saveFile.accept = ".prsv";
+    //   saveFile.style.display = "none";
+    //   saveFile.addEventListener("change",
+    //     hanldeImport
+    //   );
+    //   saveFile.click();
+    // }
 
 
     /*(this.scene.plugins.get('rexfilechooserplugin') as FileChooserPlugin).open({ accept: '.prsv' })

@@ -120,14 +120,17 @@ export default class MenuUiHandler extends MessageUiHandler {
     };
 
     // if (bypassLogin()) {
-    //   manageDataOptions.push({
-    //     label: i18next.t("menuUiHandler:importSession"),
-    //     handler: () => {
-    //       confirmSlot(i18next.t("menuUiHandler:importSlotSelect"), () => true, slotId => this.scene.gameData.importData(GameDataType.SESSION, slotId));
-    //       return true;
-    //     },
-    //     keepOpen: true
-    //   });
+      manageDataOptions.push({
+        label: i18next.t("menuUiHandler:importSession"),
+        handler: () => {
+          const that = this
+          window.plus.nativeUI.alert("导入须知：因系统限制需要手动将要导入的文件命名为 1.prsv，并放置在对应目录下： Android/data/plus.H507852F9/downloads/1.prsv （可能存在系统自带文件管理器不支持访问Android/data的情况，可改用第三方文件管理器，如MT管理器",function(){  
+            confirmSlot(i18next.t("menuUiHandler:importSlotSelect"), () => true, slotId => that.scene.gameData.importData(GameDataType.SESSION, slotId));
+          });  
+          return true;
+        },
+        keepOpen: true
+      });
     // }
     manageDataOptions.push({
       label: i18next.t("menuUiHandler:exportSession"),
@@ -151,14 +154,17 @@ export default class MenuUiHandler extends MessageUiHandler {
       keepOpen: true
     });
     // if (bypassLogin()) {
-    //   manageDataOptions.push({
-    //     label: i18next.t("menuUiHandler:importData"),
-    //     handler: () => {
-    //       this.scene.gameData.importData(GameDataType.SYSTEM);
-    //       return true;
-    //     },
-    //     keepOpen: true
-    //   });
+      manageDataOptions.push({
+        label: i18next.t("menuUiHandler:importData"),
+        handler: () => {
+          const that = this
+          window.plus.nativeUI.alert("导入须知：因系统限制需要手动将要导入的文件命名为 1.prsv，并放置在对应目录下： Android/data/plus.H507852F9/downloads/1.prsv （可能存在系统自带文件管理器不支持访问Android/data的情况，可改用第三方文件管理器,如MT管理器）",function(){  
+            that.scene.gameData.importData(GameDataType.SYSTEM);
+          });  
+          return true;
+        },
+        keepOpen: true
+      });
     // }
     manageDataOptions.push(
       {
