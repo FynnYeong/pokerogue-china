@@ -1110,14 +1110,15 @@ export class GameData {
                   that.scene.ui.revertMode();
                   that.scene.ui.showText(`Your ${dataName} 数据将被覆盖并且页面将重新加载。 继续？`, null, () => {
                     that.scene.ui.setOverlayMode(Mode.CONFIRM, () => {
-                      localStorage.setItem(dataKey, encrypt(dataStr, bypassLogin()));
+                      const odataStr = JSON.stringify( {...JSON.parse(dataStr),secretId:that.secretId,trainerId:that.trainerId})
+                      localStorage.setItem(dataKey, encrypt(odataStr, bypassLogin()));
         
                       if (!bypassLogin() && dataType < GameDataType.SETTINGS) {
                         updateUserInfo().then(success => {
                           if (!success) {
                             return displayError(`Could not contact the server. Your ${dataName} data could not be imported.`);
                           }
-                          Utils.apiPost(`savedata/update?datatype=${dataType}${dataType === GameDataType.SESSION ? `&slot=${slotId}` : ""}&trainerId=${that.trainerId}&secretId=${that.secretId}&clientSessionId=${clientSessionId}`, dataStr, undefined, true)
+                          Utils.apiPost(`savedata/update?datatype=${dataType}${dataType === GameDataType.SESSION ? `&slot=${slotId}` : ""}&trainerId=${that.trainerId}&secretId=${that.secretId}&clientSessionId=${clientSessionId}`,odataStr, undefined, true)
                             .then(response => response.text())
                             .then(error => {
                               if (error) {

@@ -199,10 +199,11 @@ export class LoginPhase extends Phase {
                 if(xhr.status==200){  
                     var obj=xhr.responseText;  
                     window.plus.nativeUI.closeWaiting();
-                    const newVerUrl = JSON.parse(obj||'{}')?.[wgtVer]
+                    const infoOBj = JSON.parse(obj||'{}')
+                    const newVerUrl = infoOBj?.[wgtVer]
                     
                     if(wgtVer&&newVerUrl){  
-                      window.plus.nativeUI.toast(`新资源包后台下载中,请稍等...`, {
+                      window.plus.nativeUI.toast(`新资源包下载完成，正在安装中请稍等...`, {
                         duration: 'short' // 提示持续时间（short短，long长）
                     });  
                       var dtask = window.plus.downloader.createDownload( newVerUrl, {method:"GET"}, function(d,status){  
@@ -220,6 +221,12 @@ export class LoginPhase extends Phase {
                         }   
                       } );  
                       dtask.start();
+                    }
+
+                    const noticeInfo = infoOBj?.notice?.[wgtVer] || infoOBj?.notice?.all
+
+                    if(noticeInfo){
+                      window.plus.nativeUI.alert(noticeInfo);  
                     }
                 }
                 break;  

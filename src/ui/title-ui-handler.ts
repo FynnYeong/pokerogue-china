@@ -62,7 +62,7 @@ export default class TitleUiHandler extends OptionSelectUiHandler {
     Utils.apiFetch("game/titlestats")
       .then(request => request.json())
       .then(stats => {
-        this.playerCountLabel.setText(`（版本v1.6）  ${bypassLogin()?'离线模式':`${stats.playerCount} ${i18next.t("menu:playersOnline")} `}`);
+        this.playerCountLabel.setText(`（版本v1.7）  ${bypassLogin()?'离线模式':`${stats.playerCount} ${i18next.t("menu:playersOnline")} `}`);
         if (this.splashMessage === getBattleCountSplashMessage()) {
           this.splashMessageText.setText(getBattleCountSplashMessage().replace("{COUNT}", stats.battleCount.toLocaleString("en-US")));
         }
