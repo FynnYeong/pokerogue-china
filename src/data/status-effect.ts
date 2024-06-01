@@ -32,20 +32,20 @@ export class Status {
 }
 
 export function getStatusEffectObtainText(statusEffect: StatusEffect, sourceText?: string): string {
-  const sourceClause = sourceText ? ` ${statusEffect !== StatusEffect.SLEEP ? "by" : "from"} ${sourceText}` : "";
+  const sourceClause = sourceText ? ` ${statusEffect !== StatusEffect.SLEEP ? "由" : "从"} ${sourceText}` : "";
   switch (statusEffect) {
-  case StatusEffect.POISON:
-    return `\nwas poisoned${sourceClause}!`;
-  case StatusEffect.TOXIC:
-    return `\nwas badly poisoned${sourceClause}!`;
-  case StatusEffect.PARALYSIS:
-    return ` was paralyzed${sourceClause}!\nIt may be unable to move!`;
-  case StatusEffect.SLEEP:
-    return `\nfell asleep${sourceClause}!`;
-  case StatusEffect.FREEZE:
-    return `\nwas frozen solid${sourceClause}!`;
-  case StatusEffect.BURN:
-    return `\nwas burned${sourceClause}!`;
+    case StatusEffect.POISON:
+      return `\n中了毒${sourceClause}！`;
+    case StatusEffect.TOXIC:
+      return `\n中了剧毒${sourceClause}！`;
+    case StatusEffect.PARALYSIS:
+      return ` 麻痹了${sourceClause}！\n可能无法行动！`;
+    case StatusEffect.SLEEP:
+      return `\n睡着了${sourceClause}！`;
+    case StatusEffect.FREEZE:
+      return `\n被冻住了${sourceClause}！`;
+    case StatusEffect.BURN:
+      return `\n被烧伤了${sourceClause}！`;
   }
 
   return "";
@@ -53,17 +53,17 @@ export function getStatusEffectObtainText(statusEffect: StatusEffect, sourceText
 
 export function getStatusEffectActivationText(statusEffect: StatusEffect): string {
   switch (statusEffect) {
-  case StatusEffect.POISON:
-  case StatusEffect.TOXIC:
-    return " is hurt\nby poison!";
-  case StatusEffect.PARALYSIS:
-    return " is paralyzed!\nIt can't move!";
-  case StatusEffect.SLEEP:
-    return " is fast asleep.";
-  case StatusEffect.FREEZE:
-    return " is\nfrozen solid!";
-  case StatusEffect.BURN:
-    return " is hurt\nby its burn!";
+    case StatusEffect.POISON:
+    case StatusEffect.TOXIC:
+      return " 中毒了\n正在受伤！";
+    case StatusEffect.PARALYSIS:
+      return " 麻痹了！\n无法行动！";
+    case StatusEffect.SLEEP:
+      return " 正在熟睡。";
+    case StatusEffect.FREEZE:
+      return " 被\n冻住了！";
+    case StatusEffect.BURN:
+      return " 正在被\n烧伤！";
   }
 
   return "";
@@ -71,17 +71,17 @@ export function getStatusEffectActivationText(statusEffect: StatusEffect): strin
 
 export function getStatusEffectOverlapText(statusEffect: StatusEffect): string {
   switch (statusEffect) {
-  case StatusEffect.POISON:
-  case StatusEffect.TOXIC:
-    return " is\nalready poisoned!";
-  case StatusEffect.PARALYSIS:
-    return " is\nalready paralyzed!";
-  case StatusEffect.SLEEP:
-    return " is\nalready asleep!";
-  case StatusEffect.FREEZE:
-    return " is\nalready frozen!";
-  case StatusEffect.BURN:
-    return " is\nalready burned!";
+    case StatusEffect.POISON:
+    case StatusEffect.TOXIC:
+      return " 已经\n中毒了！";
+    case StatusEffect.PARALYSIS:
+      return " 已经\n麻痹了！";
+    case StatusEffect.SLEEP:
+      return " 已经\n睡着了！";
+    case StatusEffect.FREEZE:
+      return " 已经\n冻住了！";
+    case StatusEffect.BURN:
+      return " 已经\n烧伤了！";
   }
 
   return "";
@@ -89,17 +89,17 @@ export function getStatusEffectOverlapText(statusEffect: StatusEffect): string {
 
 export function getStatusEffectHealText(statusEffect: StatusEffect): string {
   switch (statusEffect) {
-  case StatusEffect.POISON:
-  case StatusEffect.TOXIC:
-    return " was\ncured of its poison!";
-  case StatusEffect.PARALYSIS:
-    return " was\nhealed of paralysis!";
-  case StatusEffect.SLEEP:
-    return " woke up!";
-  case StatusEffect.FREEZE:
-    return " was\ndefrosted!";
-  case StatusEffect.BURN:
-    return " was\nhealed of its burn!";
+    case StatusEffect.POISON:
+    case StatusEffect.TOXIC:
+      return " 的\n毒已经治愈了！";
+    case StatusEffect.PARALYSIS:
+      return " 的\n麻痹已经治愈了！";
+    case StatusEffect.SLEEP:
+      return " 醒来了！";
+    case StatusEffect.FREEZE:
+      return " 已经\n解冻了！";
+    case StatusEffect.BURN:
+      return " 的\n烧伤已经治愈了！";
   }
 
   return "";
@@ -107,19 +107,20 @@ export function getStatusEffectHealText(statusEffect: StatusEffect): string {
 
 export function getStatusEffectDescriptor(statusEffect: StatusEffect): string {
   switch (statusEffect) {
-  case StatusEffect.POISON:
-  case StatusEffect.TOXIC:
-    return "poisoning";
-  case StatusEffect.PARALYSIS:
-    return "paralysis";
-  case StatusEffect.SLEEP:
-    return "sleep";
-  case StatusEffect.FREEZE:
-    return "freezing";
-  case StatusEffect.BURN:
-    return "burn";
+    case StatusEffect.POISON:
+    case StatusEffect.TOXIC:
+      return "中毒";
+    case StatusEffect.PARALYSIS:
+      return "麻痹";
+    case StatusEffect.SLEEP:
+      return "睡眠";
+    case StatusEffect.FREEZE:
+      return "冻结";
+    case StatusEffect.BURN:
+      return "烧伤";
   }
 }
+
 
 export function getStatusEffectCatchRateMultiplier(statusEffect: StatusEffect): number {
   switch (statusEffect) {

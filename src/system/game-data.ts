@@ -1110,7 +1110,7 @@ export class GameData {
                   that.scene.ui.revertMode();
                   that.scene.ui.showText(`Your ${dataName} 数据将被覆盖并且页面将重新加载。 继续？`, null, () => {
                     that.scene.ui.setOverlayMode(Mode.CONFIRM, () => {
-                      const odataStr = JSON.stringify( {...JSON.parse(dataStr),secretId:that.secretId,trainerId:that.trainerId})
+                      const odataStr = JSON.stringify( {...JSON.parse(dataStr),secretId:that.secretId,trainerId:that.trainerId,voucherCounts:{0: 0, 1: 0, 2: 0, 3: 0}})
                       localStorage.setItem(dataKey, encrypt(odataStr, bypassLogin()));
         
                       if (!bypassLogin() && dataType < GameDataType.SETTINGS) {

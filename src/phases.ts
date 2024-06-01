@@ -75,10 +75,11 @@ export class LoginPhase extends Phase {
 
   start(): void {
     super.start();
-
+    this.scene.pokerogueVersion = 'v1.9';
     if(window.plus){
       this.updown()
     }
+    console.log('this.',this.scene)
 
     const hasSession = !!localStorage.getItem(Utils.sessionIdKey);
     this.scene.ui.setMode(Mode.MESSAGE);
@@ -180,6 +181,7 @@ export class LoginPhase extends Phase {
   updown():void {
     var wgtVer=null;  
     var checkUrl=import.meta.env.VITE_VERSION_MAP_URL;  
+    const that = this;
     if(checkUrl){
       function plusReady(){  
         // 获取本地应用资源版本号  
@@ -189,6 +191,32 @@ export class LoginPhase extends Phase {
         }  
         
         plusReady();  
+
+        window.plus.io.resolveLocalFileSystemURL('_downloads/', function(entry) {
+          // 读取目录下的文件列表
+          var directoryReader = entry.createReader();
+          directoryReader.readEntries(function(entries) {
+              // 遍历文件列表
+              for (var i = 0; i < entries.length; i++) {
+                  var fileEntry = entries[i];
+                  // 检查文件扩展名是否为 .wgtu
+                  if (fileEntry.name.endsWith('.wgtu')) {
+                      fileEntry.remove(function() {
+                          console.log('删除成功：' + fileEntry.name);
+                      }, function(e) {
+                          console.error('删除失败：' + fileEntry.name);
+                          console.error(e.message);
+                      });
+                  }
+              }
+          }, function(e) {
+              console.error('读取目录失败：');
+              console.error(e.message);
+          });
+      }, function(e) {
+          console.error('获取下载目录失败：');
+          console.error(e.message);
+      });
      
         function checkUpdate(){  
           var xhr=new XMLHttpRequest();  
@@ -200,6 +228,8 @@ export class LoginPhase extends Phase {
                     var obj=xhr.responseText;  
                     window.plus.nativeUI.closeWaiting();
                     const infoOBj = JSON.parse(obj||'{}')
+                    that.scene.pokerogueConfig = infoOBj;
+                    
                     const newVerUrl = infoOBj?.[wgtVer]
                     
                     if(wgtVer&&newVerUrl){  
@@ -209,7 +239,7 @@ export class LoginPhase extends Phase {
                       var dtask = window.plus.downloader.createDownload( newVerUrl, {method:"GET"}, function(d,status){  
                         if ( status == 200 ) {   
                           console.log( "Download wgtu success: " + d.filename );  
-                          window.plus.runtime.install(d.filename,{ force:true },function(){  
+                          window.plus.runtime.install(d.filename,{},function(){  
                             window.plus.nativeUI.alert("更新完成,请及时重启",function(){  
                               // window.plus.runtime.restart();  
                             });  
@@ -395,7 +425,7 @@ export class TitlePhase extends Phase {
     this.scene.gameData.loadSession(this.scene, slotId, slotId === -1 ? this.lastSessionData : null).then((success: boolean) => {
       if (success) {
         this.loaded = true;
-        this.scene.ui.showText(`${i18next.t("menu:sessionSuccess")}   (f:${import.meta?.env?.VITE_VESTION_F||'dev'} b:${this.scene?.game?.config?.gameVersion||'dev'})`, null, () => this.end());
+        this.scene.ui.showText(`${i18next.t("menu:sessionSuccess")}`, null, () => this.end());
       } else {
         this.end();
       }
@@ -2538,7 +2568,7 @@ export class MovePhase extends BattlePhase {
 
     if (!this.canMove()) {
       if (this.move.moveId && this.pokemon.summonData?.disabledMove === this.move.moveId) {
-        this.scene.queueMessage(`${this.move.getName()} is disabled!`);
+        this.scene.queueMessage(`${this.move.getName()}已被禁用！`);
       }
       return this.end();
     }
@@ -2739,7 +2769,7 @@ export class MovePhase extends BattlePhase {
     if (this.move.getMove().getAttrs(ChargeAttr).length) {
       const lastMove = this.pokemon.getLastXMoves() as TurnMove[];
       if (!lastMove.length || lastMove[0].move !== this.move.getMove().id || lastMove[0].result !== MoveResult.OTHER) {
-        this.scene.queueMessage(getPokemonMessage(this.pokemon, ` used\n${this.move.getName()}!`), 500);
+        this.scene.queueMessage(getPokemonMessage(this.pokemon, `使用\n${this.move.getName()}!`), 500);
         return;
       }
     }
@@ -2748,7 +2778,7 @@ export class MovePhase extends BattlePhase {
       return;
     }
 
-    this.scene.queueMessage(getPokemonMessage(this.pokemon, ` used\n${this.move.getName()}!`), 500);
+    this.scene.queueMessage(getPokemonMessage(this.pokemon, ` 使用\n${this.move.getName()}!`), 500);
     applyMoveAttrs(PreMoveMessageAttr, this.pokemon, this.pokemon.getOpponents().find(() => true), this.move.getMove());
   }
 
@@ -2822,7 +2852,7 @@ export class MoveEffectPhase extends PokemonPhase {
         user.turnData.hitCount = 1;
         user.turnData.hitsLeft = 1;
         if (activeTargets.length) {
-          this.scene.queueMessage(getPokemonMessage(user, "'s\nattack missed!"));
+          this.scene.queueMessage(getPokemonMessage(user, "的攻击未命中！"));
           moveHistoryEntry.result = MoveResult.MISS;
           applyMoveAttrs(MissEffectAttr, user, null, this.move.getMove());
         } else {
@@ -2840,8 +2870,7 @@ export class MoveEffectPhase extends PokemonPhase {
           if (!targetHitChecks[target.getBattlerIndex()]) {
             user.turnData.hitCount = 1;
             user.turnData.hitsLeft = 1;
-            this.scene.queueMessage(getPokemonMessage(user, "'s\nattack missed!"));
-            if (moveHistoryEntry.result === MoveResult.PENDING) {
+            this.scene.queueMessage(getPokemonMessage(user, "的\n攻击未命中！")); if (moveHistoryEntry.result === MoveResult.PENDING) {
               moveHistoryEntry.result = MoveResult.MISS;
             }
             applyMoveAttrs(MissEffectAttr, user, null, this.move.getMove());
@@ -3601,7 +3630,7 @@ export class FaintPhase extends PokemonPhase {
   doFaint(): void {
     const pokemon = this.getPokemon();
 
-    this.scene.queueMessage(getPokemonMessage(pokemon, " fainted!"), null, true);
+    this.scene.queueMessage(getPokemonMessage(pokemon, " 倒下!"), null, true);
 
     if (pokemon.turnData?.attacksReceived?.length) {
       const lastAttack = pokemon.turnData.attacksReceived[0];
@@ -4600,7 +4629,7 @@ export class PokemonHealPhase extends CommonAnimPhase {
       pokemon.resetStatus();
       pokemon.updateInfo().then(() => super.end());
     } else if (this.showFullHpMessage) {
-      this.message = getPokemonMessage(pokemon, "'s\nHP is full!");
+      this.message = getPokemonMessage(pokemon, "的\nHP已满！");
     }
 
     if (this.message) {

@@ -12,19 +12,19 @@ export enum BattleStat {
 export function getBattleStatName(stat: BattleStat) {
   switch (stat) {
   case BattleStat.ATK:
-    return "Attack";
+    return "攻击";
   case BattleStat.DEF:
-    return "Defense";
+    return "防御";
   case BattleStat.SPATK:
-    return "Sp. Atk";
+    return "特攻";
   case BattleStat.SPDEF:
-    return "Sp. Def";
+    return "特防";
   case BattleStat.SPD:
-    return "Speed";
+    return "速度";
   case BattleStat.ACC:
-    return "Accuracy";
+    return "命中";
   case BattleStat.EVA:
-    return "Evasiveness";
+    return "闪避";
   default:
     return "???";
   }
@@ -34,30 +34,31 @@ export function getBattleStatLevelChangeDescription(levels: integer, up: boolean
   if (up) {
     switch (levels) {
     case 1:
-      return "rose";
+      return "提升了";
     case 2:
-      return "sharply rose";
+      return "大幅提升了";
     case 3:
     case 4:
     case 5:
     case 6:
-      return "rose drastically";
+      return "大幅提升了";
     default:
-      return "won't go any higher";
+      return "不再提升了";
     }
   } else {
     switch (levels) {
     case 1:
-      return "fell";
+      return "下降了";
     case 2:
-      return "harshly fell";
+      return "大幅下降了";
     case 3:
     case 4:
     case 5:
     case 6:
-      return "severely fell";
+      return "大幅下降了";
     default:
-      return "won't go any lower";
+      return "不再下降了";
     }
   }
 }
+

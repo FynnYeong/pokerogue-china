@@ -216,34 +216,34 @@ export function getWeatherClearMessage(weatherType: WeatherType): string {
 export function getTerrainStartMessage(terrainType: TerrainType): string {
   switch (terrainType) {
   case TerrainType.MISTY:
-    return "Mist swirled around the battlefield!";
+    return "薄雾环绕着战场！";
   case TerrainType.ELECTRIC:
-    return "An electric current ran across the battlefield!";
+    return "电流穿过了战场！";
   case TerrainType.GRASSY:
-    return "Grass grew to cover the battlefield!";
+    return "草木葱茏，覆盖了整个战场！";
   case TerrainType.PSYCHIC:
-    return "The battlefield got weird!";
+    return "战场变得诡异起来！";
   }
 }
 
 export function getTerrainClearMessage(terrainType: TerrainType): string {
   switch (terrainType) {
   case TerrainType.MISTY:
-    return "The mist disappeared from the battlefield.";
+    return "战场上的薄雾消散了。";
   case TerrainType.ELECTRIC:
-    return "The electricity disappeared from the battlefield.";
+    return "战场上的电流消失了。";
   case TerrainType.GRASSY:
-    return "The grass disappeared from the battlefield.";
+    return "战场上的草木不见了。";
   case TerrainType.PSYCHIC:
-    return "The weirdness disappeared from the battlefield!";
+    return "战场上的诡异感消失了！";
   }
 }
 
 export function getTerrainBlockMessage(pokemon: Pokemon, terrainType: TerrainType): string {
   if (terrainType === TerrainType.MISTY) {
-    return getPokemonMessage(pokemon, " surrounds itself with a protective mist!");
+    return getPokemonMessage(pokemon, "环绕自己布下了一层保护性的薄雾！");
   }
-  return getPokemonMessage(pokemon, ` is protected by the ${Utils.toReadableString(TerrainType[terrainType])} Terrain!`);
+  return getPokemonMessage(pokemon, `受到${Utils.toReadableString(TerrainType[terrainType])}的保护！`);
 }
 
 interface WeatherPoolEntry {

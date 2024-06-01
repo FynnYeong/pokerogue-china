@@ -103,7 +103,7 @@ export class RechargingTag extends BattlerTag {
   lapse(pokemon: Pokemon, lapseType: BattlerTagLapseType): boolean {
     super.lapse(pokemon, lapseType);
 
-    pokemon.scene.queueMessage(getPokemonMessage(pokemon, " must\nrecharge!"));
+    pokemon.scene.queueMessage(getPokemonMessage(pokemon, "必须重新充能！"));
     (pokemon.scene.getCurrentPhase() as MovePhase).cancel();
     pokemon.getMoveQueue().shift();
 
@@ -132,11 +132,11 @@ export class TrappedTag extends BattlerTag {
   onRemove(pokemon: Pokemon): void {
     super.onRemove(pokemon);
 
-    pokemon.scene.queueMessage(getPokemonMessage(pokemon, ` was freed\nfrom ${this.getMoveName()}!`));
+    pokemon.scene.queueMessage(getPokemonMessage(pokemon, `从${this.getMoveName()}中解脱了！`));
   }
 
   getDescriptor(): string {
-    return "trapping";
+    return "被困住";
   }
 
   isSourceLinked(): boolean {
@@ -144,9 +144,10 @@ export class TrappedTag extends BattlerTag {
   }
 
   getTrapMessage(pokemon: Pokemon): string {
-    return getPokemonMessage(pokemon, " can no\nlonger escape!");
+    return getPokemonMessage(pokemon, "无法逃脱了！");
   }
 }
+
 
 export class FlinchedTag extends BattlerTag {
   constructor(sourceMove: Moves) {
@@ -167,7 +168,7 @@ export class FlinchedTag extends BattlerTag {
     super.lapse(pokemon, lapseType);
 
     (pokemon.scene.getCurrentPhase() as MovePhase).cancel();
-    pokemon.scene.queueMessage(getPokemonMessage(pokemon, " flinched!"));
+    pokemon.scene.queueMessage(getPokemonMessage(pokemon, "畏缩了！"));
 
     return true;
   }
@@ -213,33 +214,33 @@ export class ConfusedTag extends BattlerTag {
     super.onAdd(pokemon);
 
     pokemon.scene.unshiftPhase(new CommonAnimPhase(pokemon.scene, pokemon.getBattlerIndex(), undefined, CommonAnim.CONFUSION));
-    pokemon.scene.queueMessage(getPokemonMessage(pokemon, " became\nconfused!"));
+    pokemon.scene.queueMessage(getPokemonMessage(pokemon, "陷入了混乱状态！"));
   }
 
   onRemove(pokemon: Pokemon): void {
     super.onRemove(pokemon);
 
-    pokemon.scene.queueMessage(getPokemonMessage(pokemon, " snapped\nout of confusion!"));
+    pokemon.scene.queueMessage(getPokemonMessage(pokemon, "从混乱状态中清醒了！"));
   }
 
   onOverlap(pokemon: Pokemon): void {
     super.onOverlap(pokemon);
 
-    pokemon.scene.queueMessage(getPokemonMessage(pokemon, " is\nalready confused!"));
+    pokemon.scene.queueMessage(getPokemonMessage(pokemon, "已经处于混乱状态！"));
   }
 
   lapse(pokemon: Pokemon, lapseType: BattlerTagLapseType): boolean {
     const ret = lapseType !== BattlerTagLapseType.CUSTOM && super.lapse(pokemon, lapseType);
 
     if (ret) {
-      pokemon.scene.queueMessage(getPokemonMessage(pokemon, " is\nconfused!"));
+      pokemon.scene.queueMessage(getPokemonMessage(pokemon, "陷入了混乱状态！"));
       pokemon.scene.unshiftPhase(new CommonAnimPhase(pokemon.scene, pokemon.getBattlerIndex(), undefined, CommonAnim.CONFUSION));
 
       if (pokemon.randSeedInt(3)) {
         const atk = pokemon.getBattleStat(Stat.ATK);
         const def = pokemon.getBattleStat(Stat.DEF);
         const damage = Math.ceil(((((2 * pokemon.level / 5 + 2) * 40 * atk / def) / 50) + 2) * (pokemon.randSeedInt(15, 85) / 100));
-        pokemon.scene.queueMessage("It hurt itself in its\nconfusion!");
+        pokemon.scene.queueMessage("它在混乱中受伤了！");
         pokemon.damageAndUpdate(damage);
         pokemon.battleData.hitCount++;
         (pokemon.scene.getCurrentPhase() as MovePhase).cancel();
@@ -289,11 +290,11 @@ export class DestinyBondTag extends BattlerTag {
     const targetMessage = getPokemonMessage(pokemon, "");
 
     if (pokemon.isBossImmune()) {
-      pokemon.scene.queueMessage(`${targetMessage} is unaffected\nby the effects of Destiny Bond.`);
+      pokemon.scene.queueMessage(`${targetMessage}不受命运之链的影响。`);
       return false;
     }
-
-    pokemon.scene.queueMessage(`${getPokemonMessage(source, ` took\n${targetMessage} down with it!`)}`);
+    
+    pokemon.scene.queueMessage(`${getPokemonMessage(source, `带着${targetMessage}一同倒下了！`)}`);
     pokemon.damageAndUpdate(pokemon.hp, HitResult.ONE_HIT_KO, false, false, true);
     return false;
   }
@@ -310,25 +311,23 @@ export class InfatuatedTag extends BattlerTag {
 
   onAdd(pokemon: Pokemon): void {
     super.onAdd(pokemon);
-
-    pokemon.scene.queueMessage(getPokemonMessage(pokemon, ` fell in love\nwith ${pokemon.scene.getPokemonById(this.sourceId).name}!`));
+    pokemon.scene.queueMessage(getPokemonMessage(pokemon, `爱上了${pokemon.scene.getPokemonById(this.sourceId).name}！`));
   }
 
   onOverlap(pokemon: Pokemon): void {
     super.onOverlap(pokemon);
-
-    pokemon.scene.queueMessage(getPokemonMessage(pokemon, " is\nalready in love!"));
+    pokemon.scene.queueMessage(getPokemonMessage(pokemon, "已经处于恋爱状态！"));
   }
 
   lapse(pokemon: Pokemon, lapseType: BattlerTagLapseType): boolean {
     const ret = lapseType !== BattlerTagLapseType.CUSTOM || super.lapse(pokemon, lapseType);
 
     if (ret) {
-      pokemon.scene.queueMessage(getPokemonMessage(pokemon, ` is in love\nwith ${pokemon.scene.getPokemonById(this.sourceId).name}!`));
+      pokemon.scene.queueMessage(getPokemonMessage(pokemon, `爱上了${pokemon.scene.getPokemonById(this.sourceId).name}！`));
       pokemon.scene.unshiftPhase(new CommonAnimPhase(pokemon.scene, pokemon.getBattlerIndex(), undefined, CommonAnim.ATTRACT));
 
       if (pokemon.randSeedInt(2)) {
-        pokemon.scene.queueMessage(getPokemonMessage(pokemon, " is\nimmobilized by love!"));
+        pokemon.scene.queueMessage(getPokemonMessage(pokemon, "被爱情所束缚！"));
         (pokemon.scene.getCurrentPhase() as MovePhase).cancel();
       }
     }
@@ -338,8 +337,7 @@ export class InfatuatedTag extends BattlerTag {
 
   onRemove(pokemon: Pokemon): void {
     super.onRemove(pokemon);
-
-    pokemon.scene.queueMessage(getPokemonMessage(pokemon, " got over\nits infatuation."));
+    pokemon.scene.queueMessage(getPokemonMessage(pokemon, "摆脱了恋爱状态。"));
   }
 
   isSourceLinked(): boolean {
@@ -347,7 +345,7 @@ export class InfatuatedTag extends BattlerTag {
   }
 
   getDescriptor(): string {
-    return "infatuation";
+    return "恋爱";
   }
 }
 
@@ -373,8 +371,7 @@ export class SeedTag extends BattlerTag {
 
   onAdd(pokemon: Pokemon): void {
     super.onAdd(pokemon);
-
-    pokemon.scene.queueMessage(getPokemonMessage(pokemon, " was seeded!"));
+    pokemon.scene.queueMessage(getPokemonMessage(pokemon, "被种了种子！"));
     this.sourceIndex = pokemon.scene.getPokemonById(this.sourceId).getBattlerIndex();
   }
 
@@ -394,7 +391,7 @@ export class SeedTag extends BattlerTag {
           const reverseDrain = pokemon.hasAbilityWithAttr(ReverseDrainAbAttr);
           pokemon.scene.unshiftPhase(new PokemonHealPhase(pokemon.scene, source.getBattlerIndex(),
             !reverseDrain ? damage : damage * -1,
-            !reverseDrain ? getPokemonMessage(pokemon, "'s health is\nsapped by Leech Seed!") : getPokemonMessage(source, "'s Leech Seed\nsucked up the liquid ooze!"),
+            !reverseDrain ? getPokemonMessage(pokemon, "被寄生种子吸取了体力！") : getPokemonMessage(source, "的寄生种子吸干了液态粘液！"),
             false, true));
         }
       }
@@ -416,20 +413,20 @@ export class NightmareTag extends BattlerTag {
   onAdd(pokemon: Pokemon): void {
     super.onAdd(pokemon);
 
-    pokemon.scene.queueMessage(getPokemonMessage(pokemon, " began\nhaving a Nightmare!"));
+    pokemon.scene.queueMessage(getPokemonMessage(pokemon, "开始做噩梦！"));
   }
 
   onOverlap(pokemon: Pokemon): void {
     super.onOverlap(pokemon);
 
-    pokemon.scene.queueMessage(getPokemonMessage(pokemon, " is\nalready locked in a Nightmare!"));
+    pokemon.scene.queueMessage(getPokemonMessage(pokemon, "已经陷入噩梦中！"));
   }
 
   lapse(pokemon: Pokemon, lapseType: BattlerTagLapseType): boolean {
     const ret = lapseType !== BattlerTagLapseType.CUSTOM || super.lapse(pokemon, lapseType);
 
     if (ret) {
-      pokemon.scene.queueMessage(getPokemonMessage(pokemon, " is locked\nin a Nightmare!"));
+      pokemon.scene.queueMessage(getPokemonMessage(pokemon, "陷入了噩梦！"));
       pokemon.scene.unshiftPhase(new CommonAnimPhase(pokemon.scene, pokemon.getBattlerIndex(), undefined, CommonAnim.CURSE)); // TODO: Update animation type
 
       const cancelled = new Utils.BooleanHolder(false);
@@ -444,7 +441,7 @@ export class NightmareTag extends BattlerTag {
   }
 
   getDescriptor(): string {
-    return "nightmares";
+    return "噩梦";
   }
 }
 
@@ -599,7 +596,7 @@ export class AquaRingTag extends BattlerTag {
   onAdd(pokemon: Pokemon): void {
     super.onAdd(pokemon);
 
-    pokemon.scene.queueMessage(getPokemonMessage(pokemon, " surrounded\nitself with a veil of water!"));
+    pokemon.scene.queueMessage(getPokemonMessage(pokemon, "用水幕将自己包围了起来！"));
   }
 
   lapse(pokemon: Pokemon, lapseType: BattlerTagLapseType): boolean {
@@ -822,13 +819,13 @@ export class ProtectedTag extends BattlerTag {
   onAdd(pokemon: Pokemon): void {
     super.onAdd(pokemon);
 
-    pokemon.scene.queueMessage(getPokemonMessage(pokemon, "\nprotected itself!"));
+    pokemon.scene.queueMessage(getPokemonMessage(pokemon, "\n保护了自己！"));
   }
 
   lapse(pokemon: Pokemon, lapseType: BattlerTagLapseType): boolean {
     if (lapseType === BattlerTagLapseType.CUSTOM) {
       new CommonBattleAnim(CommonAnim.PROTECT, pokemon).play(pokemon.scene);
-      pokemon.scene.queueMessage(getPokemonMessage(pokemon, "\nprotected itself!"));
+      pokemon.scene.queueMessage(getPokemonMessage(pokemon, "\n保护了自己！"));
       return true;
     }
 
@@ -953,12 +950,12 @@ export class EnduringTag extends BattlerTag {
   onAdd(pokemon: Pokemon): void {
     super.onAdd(pokemon);
 
-    pokemon.scene.queueMessage(getPokemonMessage(pokemon, " braced\nitself!"));
+    pokemon.scene.queueMessage(getPokemonMessage(pokemon, " 鼓起了勇气！"));
   }
 
   lapse(pokemon: Pokemon, lapseType: BattlerTagLapseType): boolean {
     if (lapseType === BattlerTagLapseType.CUSTOM) {
-      pokemon.scene.queueMessage(getPokemonMessage(pokemon, " endured\nthe hit!"));
+      pokemon.scene.queueMessage(getPokemonMessage(pokemon, " 顶住了攻击！"));
       return true;
     }
 
@@ -973,7 +970,7 @@ export class SturdyTag extends BattlerTag {
 
   lapse(pokemon: Pokemon, lapseType: BattlerTagLapseType): boolean {
     if (lapseType === BattlerTagLapseType.CUSTOM) {
-      pokemon.scene.queueMessage(getPokemonMessage(pokemon, " endured\nthe hit!"));
+      pokemon.scene.queueMessage(getPokemonMessage(pokemon, " 顶住了攻击！"));
       return true;
     }
 
@@ -994,7 +991,7 @@ export class PerishSongTag extends BattlerTag {
     const ret = super.lapse(pokemon, lapseType);
 
     if (ret) {
-      pokemon.scene.queueMessage(getPokemonMessage(pokemon, `\'s perish count fell to ${this.turnCount}.`));
+      pokemon.scene.queueMessage(getPokemonMessage(pokemon, `的濒死倒计时降低到 ${this.turnCount}。`));
     } else {
       pokemon.damageAndUpdate(pokemon.hp, HitResult.ONE_HIT_KO, false, true, true);
     }
@@ -1038,7 +1035,7 @@ export class TruantTag extends AbilityBattlerTag {
     if (lastMove && lastMove.move !== Moves.NONE) {
       (pokemon.scene.getCurrentPhase() as MovePhase).cancel();
       pokemon.scene.unshiftPhase(new ShowAbilityPhase(pokemon.scene, pokemon.id, passive));
-      pokemon.scene.queueMessage(getPokemonMessage(pokemon, " is\nloafing around!"));
+      pokemon.scene.queueMessage(getPokemonMessage(pokemon, " 正在偷懒！"));
     }
 
     return true;
@@ -1053,7 +1050,7 @@ export class SlowStartTag extends AbilityBattlerTag {
   onAdd(pokemon: Pokemon): void {
     super.onAdd(pokemon);
 
-    pokemon.scene.queueMessage(getPokemonMessage(pokemon, " can't\nget it going!"), null, false, null, true);
+    pokemon.scene.queueMessage(getPokemonMessage(pokemon, " 迟迟无法加速启动！"), null, false, null, true);
   }
 
   lapse(pokemon: Pokemon, lapseType: BattlerTagLapseType): boolean {
@@ -1067,7 +1064,7 @@ export class SlowStartTag extends AbilityBattlerTag {
   onRemove(pokemon: Pokemon): void {
     super.onRemove(pokemon);
 
-    pokemon.scene.queueMessage(getPokemonMessage(pokemon, " finally\ngot its act together!"), null, false, null);
+    pokemon.scene.queueMessage(getPokemonMessage(pokemon, " 终于加速启动了！"), null, false, null);
   }
 }
 
@@ -1113,13 +1110,13 @@ export class HighestStatBoostTag extends AbilityBattlerTag {
       break;
     }
 
-    pokemon.scene.queueMessage(getPokemonMessage(pokemon, `'s ${getStatName(highestStat)}\nwas heightened!`), null, false, null, true);
+    pokemon.scene.queueMessage(getPokemonMessage(pokemon, `的${getStatName(highestStat)}提高了！`), null, false, null, true);
   }
 
   onRemove(pokemon: Pokemon): void {
     super.onRemove(pokemon);
 
-    pokemon.scene.queueMessage(`The effects of ${getPokemonMessage(pokemon, `'s\n${allAbilities[this.ability].name} wore off!`)}`);
+    pokemon.scene.queueMessage(`效果结束了，${getPokemonMessage(pokemon, `的\n${allAbilities[this.ability].name}效果消失了！`)}`);
   }
 }
 
@@ -1140,6 +1137,7 @@ export class WeatherHighestStatBoostTag extends HighestStatBoostTag implements W
     this.weatherTypes = source.weatherTypes.map(w => w as WeatherType);
   }
 }
+
 
 export class TerrainHighestStatBoostTag extends HighestStatBoostTag implements TerrainBattlerTag {
   public terrainTypes: TerrainType[];
@@ -1238,7 +1236,7 @@ export class CritBoostTag extends BattlerTag {
   onAdd(pokemon: Pokemon): void {
     super.onAdd(pokemon);
 
-    pokemon.scene.queueMessage(getPokemonMessage(pokemon, " is getting\npumped!"));
+    pokemon.scene.queueMessage(getPokemonMessage(pokemon, "兴奋起来了！"));
   }
 
   lapse(pokemon: Pokemon, lapseType: BattlerTagLapseType): boolean {
@@ -1248,7 +1246,7 @@ export class CritBoostTag extends BattlerTag {
   onRemove(pokemon: Pokemon): void {
     super.onRemove(pokemon);
 
-    pokemon.scene.queueMessage(getPokemonMessage(pokemon, " relaxed."));
+    pokemon.scene.queueMessage(getPokemonMessage(pokemon, "松懈了。"));
   }
 }
 
@@ -1283,7 +1281,7 @@ export class SaltCuredTag extends BattlerTag {
   onAdd(pokemon: Pokemon): void {
     super.onAdd(pokemon);
 
-    pokemon.scene.queueMessage(getPokemonMessage(pokemon, " is being salt cured!"));
+    pokemon.scene.queueMessage(getPokemonMessage(pokemon, "正在受到盐的治疗！"));
     this.sourceIndex = pokemon.scene.getPokemonById(this.sourceId).getBattlerIndex();
   }
 
@@ -1300,7 +1298,7 @@ export class SaltCuredTag extends BattlerTag {
         const pokemonSteelOrWater = pokemon.isOfType(Type.STEEL) || pokemon.isOfType(Type.WATER);
         pokemon.damageAndUpdate(Math.max(Math.floor(pokemonSteelOrWater ? pokemon.getMaxHp() / 4 : pokemon.getMaxHp() / 8), 1));
 
-        pokemon.scene.queueMessage(getPokemonMessage(pokemon, ` is hurt by ${this.getMoveName()}!`));
+        pokemon.scene.queueMessage(getPokemonMessage(pokemon, `受到${this.getMoveName()}的伤害！`));
       }
     }
 
@@ -1327,7 +1325,7 @@ export class CursedTag extends BattlerTag {
   onAdd(pokemon: Pokemon): void {
     super.onAdd(pokemon);
 
-    pokemon.scene.queueMessage(getPokemonMessage(pokemon, " has been cursed!"));
+    pokemon.scene.queueMessage(getPokemonMessage(pokemon, "被诅咒了！"));
     this.sourceIndex = pokemon.scene.getPokemonById(this.sourceId).getBattlerIndex();
   }
 
@@ -1342,7 +1340,7 @@ export class CursedTag extends BattlerTag {
 
       if (!cancelled.value) {
         pokemon.damageAndUpdate(Math.floor(pokemon.getMaxHp() / 4));
-        pokemon.scene.queueMessage(getPokemonMessage(pokemon, ` is hurt by the ${this.getMoveName()}!`));
+        pokemon.scene.queueMessage(getPokemonMessage(pokemon, `受到了${this.getMoveName()}的伤害！`));
       }
     }
 

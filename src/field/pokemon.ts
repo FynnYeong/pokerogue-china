@@ -1237,6 +1237,13 @@ export default abstract class Pokemon extends Phaser.GameObjects.Container {
     } else {
       shinyThreshold.value = thresholdOverride;
     }
+    console.log('this222333',this.scene)
+    // 闪光活动
+    const info = this.scene?.pokerogueConfig?.active||{}
+    if(info&&info?.type==='shiny'){
+      shinyThreshold.value *=info?.shinyValue|| 2;
+    }
+    console.log("shinyThreshold.value ",shinyThreshold.value,window,window.pokerogue_activity )
 
     this.shiny = (E ^ F) < shinyThreshold.value;
     if ((E ^ F) < 32) {
