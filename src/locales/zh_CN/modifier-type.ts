@@ -46,7 +46,7 @@ export const modifierType: ModifierTypeTranslationEntries = {
     },
     "PokemonNatureChangeModifierType": {
       name: "{{natureName}}薄荷",
-      description: "将一只宝可梦的性格改为{{natureName}}并为该宝可\n梦永久解锁该性格.",
+      description: "将一只宝可梦的性格改为{{natureName}}并为该宝可梦永久解锁该性格.",
     },
     "DoubleBattleChanceBoosterModifierType": {
       description: "接下来的{{battleCount}}场战斗是双打的概率翻倍",
