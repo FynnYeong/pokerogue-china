@@ -29,6 +29,7 @@ export abstract class ArenaTag {
   public sourceId: integer;
   public side: ArenaTagSide;
 
+
   constructor(tagType: ArenaTagType, turnCount: integer, sourceMove: Moves, sourceId?: integer, side: ArenaTagSide = ArenaTagSide.BOTH) {
     this.tagType = tagType;
     this.turnCount = turnCount;
@@ -41,10 +42,12 @@ export abstract class ArenaTag {
     return true;
   }
 
-  onAdd(arena: Arena): void { }
+  onAdd(arena: Arena, quiet: boolean = false): void { }
 
-  onRemove(arena: Arena): void {
-    arena.scene.queueMessage(`${this.getMoveName()} 的效果消失了${this.side === ArenaTagSide.PLAYER ? "\n在你这边" : this.side === ArenaTagSide.ENEMY ? "\n在对手那边" : ""}。`);
+  onRemove(arena: Arena, quiet: boolean = false): void {
+    if (!quiet) {
+      arena.scene.queueMessage(`${this.getMoveName()}\'s effect wore off${this.side === ArenaTagSide.PLAYER ? "\non your side" : this.side === ArenaTagSide.ENEMY ? "\non the foe's side" : ""}.`);
+    }
   }
 
   onOverlap(arena: Arena): void { }
@@ -65,11 +68,13 @@ export class MistTag extends ArenaTag {
     super(ArenaTagType.MIST, turnCount, Moves.MIST, sourceId, side);
   }
 
-  onAdd(arena: Arena): void {
+  onAdd(arena: Arena, quiet: boolean = false): void {
     super.onAdd(arena);
 
     const source = arena.scene.getPokemonById(this.sourceId);
-    arena.scene.queueMessage(getPokemonMessage(source, "的队伍笼罩在\n白雾中！"));
+    if (!quiet) {
+      arena.scene.queueMessage(getPokemonMessage(source, "的队伍笼罩在\n白雾中！"));
+    }
   }
 
   apply(arena: Arena, args: any[]): boolean {
@@ -114,8 +119,10 @@ class ReflectTag extends WeakenMoveScreenTag {
     return false;
   }
 
-  onAdd(arena: Arena): void {
-    arena.scene.queueMessage(`反射壁降低了物理攻击的伤害${this.side === ArenaTagSide.PLAYER ? "\n在你这边" : this.side === ArenaTagSide.ENEMY ? "\n在对手那边" : ""}。`);
+  onAdd(arena: Arena, quiet: boolean = false): void {
+    if (!quiet) {
+      arena.scene.queueMessage(`反射壁降低了物理攻击的伤害${this.side === ArenaTagSide.PLAYER ? "\n在你这边" : this.side === ArenaTagSide.ENEMY ? "\n在对手那边" : ""}。`);
+    }
   }
 }
 
@@ -136,8 +143,10 @@ class LightScreenTag extends WeakenMoveScreenTag {
     return false;
   }
 
-  onAdd(arena: Arena): void {
-    arena.scene.queueMessage(`光墙降低了特殊攻击的伤害${this.side === ArenaTagSide.PLAYER ? "\n在你这边" : this.side === ArenaTagSide.ENEMY ? "\n在对手那边" : ""}。`);
+  onAdd(arena: Arena, quiet: boolean = false): void {
+    if (!quiet) {
+      arena.scene.queueMessage(`光墙降低了特殊攻击的伤害${this.side === ArenaTagSide.PLAYER ? "\n在你这边" : this.side === ArenaTagSide.ENEMY ? "\n在对手那边" : ""}。`);
+    }
   }
 }
 
@@ -146,8 +155,10 @@ class AuroraVeilTag extends WeakenMoveScreenTag {
     super(ArenaTagType.AURORA_VEIL, turnCount, Moves.AURORA_VEIL, sourceId, side);
   }
 
-  onAdd(arena: Arena): void {
-    arena.scene.queueMessage(`极光幕降低了攻击的伤害${this.side === ArenaTagSide.PLAYER ? "\n在你这边" : this.side === ArenaTagSide.ENEMY ? "\n在对手那边" : ""}。`);
+  onAdd(arena: Arena, quiet: boolean = false): void {
+    if (!quiet) {
+      arena.scene.queueMessage(`极光幕降低了攻击的伤害${this.side === ArenaTagSide.PLAYER ? "\n在你这边" : this.side === ArenaTagSide.ENEMY ? "\n在对手那边" : ""}。`);
+    }
   }
 }
 
@@ -388,11 +399,13 @@ class SpikesTag extends ArenaTrapTag {
     super(ArenaTagType.SPIKES, Moves.SPIKES, sourceId, side, 3);
   }
 
-  onAdd(arena: Arena): void {
+  onAdd(arena: Arena, quiet: boolean = false): void {
     super.onAdd(arena);
 
     const source = arena.scene.getPokemonById(this.sourceId);
-    arena.scene.queueMessage(`${this.getMoveName()} 散布在\n${source.getOpponentDescriptor()} 的脚下！`);
+    if (!quiet) {
+      arena.scene.queueMessage(`${this.getMoveName()} 散布在\n${source.getOpponentDescriptor()} 的脚下！`);
+    }
   }
 
   activateTrap(pokemon: Pokemon): boolean {
@@ -425,11 +438,13 @@ class ToxicSpikesTag extends ArenaTrapTag {
     this.neutralized = false;
   }
 
-  onAdd(arena: Arena): void {
+  onAdd(arena: Arena, quiet: boolean = false): void {
     super.onAdd(arena);
 
     const source = arena.scene.getPokemonById(this.sourceId);
-    arena.scene.queueMessage(`${this.getMoveName()} 散布在\n${source.getOpponentDescriptor()} 的脚下！`);
+    if (!quiet) {
+      arena.scene.queueMessage(`${this.getMoveName()} 散布在\n${source.getOpponentDescriptor()} 的脚下！`);
+    }
   }
 
   onRemove(arena: Arena): void {
@@ -496,15 +511,17 @@ class StealthRockTag extends ArenaTrapTag {
     super(ArenaTagType.STEALTH_ROCK, Moves.STEALTH_ROCK, sourceId, side, 1);
   }
 
-  onAdd(arena: Arena): void {
+  onAdd(arena: Arena, quiet: boolean = false): void {
     super.onAdd(arena);
 
     const source = arena.scene.getPokemonById(this.sourceId);
-    arena.scene.queueMessage(`Pointed stones float in the air\naround ${source.getOpponentDescriptor()}!`);
+    if (!quiet) {
+      arena.scene.queueMessage(`Pointed stones float in the air\naround ${source.getOpponentDescriptor()}!`);
+    }
   }
 
   getDamageHpRatio(pokemon: Pokemon): number {
-    const effectiveness = pokemon.getAttackTypeEffectiveness(Type.ROCK);
+    const effectiveness = pokemon.getAttackTypeEffectiveness(Type.ROCK, undefined, true);
 
     let damageHpRatio: number;
 
@@ -565,13 +582,15 @@ class StickyWebTag extends ArenaTrapTag {
     super(ArenaTagType.STICKY_WEB, Moves.STICKY_WEB, sourceId, side, 1);
   }
 
-  onAdd(arena: Arena): void {
+  onAdd(arena: Arena, quiet: boolean = false): void {
     super.onAdd(arena);
 
     // does not seem to be used anywhere
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const source = arena.scene.getPokemonById(this.sourceId);
-    arena.scene.queueMessage(`对方队伍周围布满了${this.getMoveName()}！`);
+    if (!quiet) {
+      arena.scene.queueMessage(`对方队伍周围布满了${this.getMoveName()}！`);
+    }
   }
 
   activateTrap(pokemon: Pokemon): boolean {
@@ -629,8 +648,10 @@ class TailwindTag extends ArenaTag {
     super(ArenaTagType.TAILWIND, turnCount, Moves.TAILWIND, sourceId, side);
   }
 
-  onAdd(arena: Arena): void {
-    arena.scene.queueMessage(`顺风从${this.side === ArenaTagSide.PLAYER ? "\n你方" : this.side === ArenaTagSide.ENEMY ? "\n对方" : ""} 队伍后方吹来!`);
+  onAdd(arena: Arena, quiet: boolean = false): void {
+    if (!quiet) {
+      arena.scene.queueMessage(`顺风从${this.side === ArenaTagSide.PLAYER ? "\n你方" : this.side === ArenaTagSide.ENEMY ? "\n对方" : ""} 队伍后方吹来!`);
+    }
 
     const source = arena.scene.getPokemonById(this.sourceId);
     const party = source.isPlayer() ? source.scene.getPlayerField() : source.scene.getEnemyField();
@@ -649,8 +670,10 @@ class TailwindTag extends ArenaTag {
     }
   }
 
-  onRemove(arena: Arena): void {
-    arena.scene.queueMessage(`${this.side === ArenaTagSide.PLAYER ? "你方" : this.side === ArenaTagSide.ENEMY ? "对方" : ""}队伍的顺风消失了！`);
+  onRemove(arena: Arena, quiet: boolean = false): void {
+    if (!quiet) {
+      arena.scene.queueMessage(`${this.side === ArenaTagSide.PLAYER ? "你方" : this.side === ArenaTagSide.ENEMY ? "对方" : ""}队伍的顺风消失了！`);
+    }
   }
 }
 

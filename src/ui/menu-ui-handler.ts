@@ -1,10 +1,10 @@
-import BattleScene, { bypassLogin } from "../battle-scene";
+import BattleScene from "../battle-scene";
 import { TextStyle, addTextObject } from "./text";
 import { Mode } from "./ui";
 import * as Utils from "../utils";
 import { addWindow } from "./ui-theme";
 import MessageUiHandler from "./message-ui-handler";
-import { GameDataType } from "../system/game-data";
+import { GameDataType } from "#app/data/enums/game-data-type";
 import { OptionSelectConfig, OptionSelectItem } from "./abstact-option-select-ui-handler";
 import { Tutorial, handleTutorial } from "../tutorial";
 import { updateUserInfo } from "../account";
@@ -120,17 +120,17 @@ export default class MenuUiHandler extends MessageUiHandler {
     };
 
     // if (bypassLogin()) {
-      manageDataOptions.push({
-        label: i18next.t("menuUiHandler:importSession"),
-        handler: () => {
-          const that = this
-          window.plus.nativeUI.alert("导入须知：需要手动将要导入的文件命名为 1.prsv，并放置在对应目录下： Android/data/plus.H507852F9/downloads/1.prsv （可能存在系统自带文件管理器不支持访问Android/data的情况，可改用第三方文件管理器，如MT管理器）",function(){  
-            confirmSlot(i18next.t("menuUiHandler:importSlotSelect"), () => true, slotId => that.scene.gameData.importData(GameDataType.SESSION, slotId));
-          });  
-          return true;
-        },
-        keepOpen: true
-      });
+    manageDataOptions.push({
+      label: i18next.t("menuUiHandler:importSession"),
+      handler: () => {
+        const that = this;
+        window.plus.nativeUI.alert("导入须知：需要手动将要导入的文件命名为 1.prsv，并放置在对应目录下： Android/data/plus.H507852F9/downloads/1.prsv （可能存在系统自带文件管理器不支持访问Android/data的情况，可改用第三方文件管理器，如MT管理器）",function() {
+          confirmSlot(i18next.t("menuUiHandler:importSlotSelect"), () => true, slotId => that.scene.gameData.importData(GameDataType.SESSION, slotId));
+        });
+        return true;
+      },
+      keepOpen: true
+    });
     // }
     manageDataOptions.push({
       label: i18next.t("menuUiHandler:exportSession"),
@@ -154,17 +154,17 @@ export default class MenuUiHandler extends MessageUiHandler {
       keepOpen: true
     });
     // if (bypassLogin()) {
-      manageDataOptions.push({
-        label: i18next.t("menuUiHandler:importData"),
-        handler: () => {
-          const that = this
-          window.plus.nativeUI.alert("导入须知：需要手动将要导入的文件命名为 1.prsv，并放置在对应目录下： Android/data/plus.H507852F9/downloads/1.prsv （可能存在系统自带文件管理器不支持访问Android/data的情况，可改用第三方文件管理器，如MT管理器）",function(){  
-            that.scene.gameData.importData(GameDataType.SYSTEM);
-          });  
-          return true;
-        },
-        keepOpen: true
-      });
+    manageDataOptions.push({
+      label: i18next.t("menuUiHandler:importData"),
+      handler: () => {
+        const that = this;
+        window.plus.nativeUI.alert("导入须知：需要手动将要导入的文件命名为 1.prsv，并放置在对应目录下： Android/data/plus.H507852F9/downloads/1.prsv （可能存在系统自带文件管理器不支持访问Android/data的情况，可改用第三方文件管理器，如MT管理器）",function() {
+          that.scene.gameData.importData(GameDataType.SYSTEM);
+        });
+        return true;
+      },
+      keepOpen: true
+    });
     // }
     manageDataOptions.push(
       {
@@ -328,7 +328,7 @@ export default class MenuUiHandler extends MessageUiHandler {
             if (!res.ok) {
               console.error(`Log out failed (${res.status}: ${res.statusText})`);
             }
-            localStorage.setItem(Utils.sessionIdKey, "")
+            localStorage.setItem(Utils.sessionIdKey, "");
             updateUserInfo().then(() => this.scene.reset(true, true));
           });
         };

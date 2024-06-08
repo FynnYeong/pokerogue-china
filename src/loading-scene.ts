@@ -16,6 +16,7 @@ import {initPokemonForms} from "#app/data/pokemon-forms";
 import {initSpecies} from "#app/data/pokemon-species";
 import {initMoves} from "#app/data/move";
 import {initAbilities} from "#app/data/ability";
+import {initAchievements} from "#app/system/achv";
 import {initTrainerTypeDialogue} from "#app/data/dialogue";
 import i18next from "i18next";
 import { initStatsKeys } from "./ui/game-stats-ui-handler";
@@ -29,6 +30,7 @@ export class LoadingScene extends SceneBase {
   }
 
   preload() {
+    Utils.localPing();
     this.load["manifest"] = this.game["manifest"];
 
     if (!isMobile()) {
@@ -95,10 +97,18 @@ export class LoadingScene extends SceneBase {
     this.loadImage("type_tera", "ui");
     this.loadAtlas("type_bgs", "ui");
 
-    this.loadImage("dawn_icon", "ui");
-    this.loadImage("day_icon", "ui");
-    this.loadImage("dusk_icon", "ui");
-    this.loadImage("night_icon", "ui");
+    this.loadImage("dawn_icon_fg", "ui");
+    this.loadImage("dawn_icon_mg", "ui");
+    this.loadImage("dawn_icon_bg", "ui");
+    this.loadImage("day_icon_fg", "ui");
+    this.loadImage("day_icon_mg", "ui");
+    this.loadImage("day_icon_bg", "ui");
+    this.loadImage("dusk_icon_fg", "ui");
+    this.loadImage("dusk_icon_mg", "ui");
+    this.loadImage("dusk_icon_bg", "ui");
+    this.loadImage("night_icon_fg", "ui");
+    this.loadImage("night_icon_mg", "ui");
+    this.loadImage("night_icon_bg", "ui");
 
     this.loadImage("pb_tray_overlay_player", "ui");
     this.loadImage("pb_tray_overlay_enemy", "ui");
@@ -315,10 +325,11 @@ export class LoadingScene extends SceneBase {
     this.loadBgm("evolution", "bw/evolution.mp3");
     this.loadBgm("evolution_fanfare", "bw/evolution_fanfare.mp3");
 
-    this.load.plugin('rextexteditplugin', './plugin/rextexteditplugin.min.js', true);
+    this.load.plugin("rextexteditplugin", "./plugin/rextexteditplugin.min.js", true);
 
     this.loadLoadingScreen();
 
+    initAchievements();
     initStatsKeys();
     initPokemonPrevolutions();
     initBiomes();

@@ -36,27 +36,10 @@ import { TerrainChangedEvent, WeatherChangedEvent } from "#app/field/arena-event
 import { Device } from "#app/enums/devices.js";
 import { EnemyAttackStatusEffectChanceModifier } from "../modifier/modifier";
 import { StatusEffect } from "#app/data/status-effect.js";
+import { PlayerGender } from "#app/data/enums/player-gender";
+import { GameDataType } from "#app/data/enums/game-data-type";
 
 const saveKey = "x0i2O7WRiANTqPmZ"; // Temporary; secure encryption is not yet necessary
-
-export enum GameDataType {
-  SYSTEM,
-  SESSION,
-  SETTINGS,
-  TUTORIALS,
-  SEEN_DIALOGUES
-}
-
-export enum PlayerGender {
-  UNSET,
-  MALE,
-  FEMALE
-}
-
-export enum Passive {
-  UNLOCKED = 1,
-  ENABLED = 2
-}
 
 export function getDataTypeKey(dataType: GameDataType, slotId: integer = 0): string {
   switch (dataType) {
@@ -510,7 +493,7 @@ export class GameData {
     });
   }
 
-  private parseSystemData(dataStr: string): SystemSaveData {
+  parseSystemData(dataStr: string): SystemSaveData {
     return JSON.parse(dataStr, (k: string, v: any) => {
       if (k === "gameStats") {
         return new GameStats(v);
@@ -529,7 +512,7 @@ export class GameData {
     }) as SystemSaveData;
   }
 
-  private convertSystemDataStr(dataStr: string, shorten: boolean = false): string {
+  convertSystemDataStr(dataStr: string, shorten: boolean = false): string {
     if (!shorten) {
       // Account for past key oversight
       dataStr = dataStr.replace(/\$pAttr/g, "$pa");
@@ -1167,40 +1150,40 @@ export class GameData {
         const blob = new Blob([ encryptedData.toString() ], {type: "text/json"});
 
 
-        if(window.plus){
-                  
-        // 获取本地公共下载目录
-        var downloadDir = '_downloads/';
-        
-        // 生成一个随机文件名
-        var fileName =  `${dataKey}.prsv`;
-        
-        // 拼接完整的文件路径
-        var filePath = downloadDir + fileName;
+        if (window.plus) {
 
-        // 将 Blob 文件写入本地文件
-        window.plus.io.requestFileSystem(window.plus.io.PRIVATE_DOC, function(fs) {
+          // 获取本地公共下载目录
+          const downloadDir = "_downloads/";
+
+          // 生成一个随机文件名
+          const fileName =  `${dataKey}.prsv`;
+
+          // 拼接完整的文件路径
+          const filePath = downloadDir + fileName;
+
+          // 将 Blob 文件写入本地文件
+          window.plus.io.requestFileSystem(window.plus.io.PRIVATE_DOC, function(fs) {
             fs.root.getFile(filePath, { create: true }, function(fileEntry) {
-                fileEntry.createWriter(function(fileWriter) {
-                    window.plus.nativeUI.toast(`下载成功：Android/data/plus.H507852F9/downloads/${dataKey}.prsv`, {
-                      duration: 'short' // 提示持续时间（short短，long长）
-                  });
-                  fileWriter.write(encryptedData.toString());
-                }, function(e) {
-                    console.error("File write error: " + e.message);
+              fileEntry.createWriter(function(fileWriter) {
+                window.plus.nativeUI.toast(`下载成功：Android/data/plus.H507852F9/downloads/${dataKey}.prsv`, {
+                  duration: "short" // 提示持续时间（short短，long长）
                 });
+                fileWriter.write(encryptedData.toString());
+              }, function(e) {
+                console.error("File write error: " + e.message);
+              });
             }, function(e) {
-                console.error("Get file entry error: " + e.message);
+              console.error("Get file entry error: " + e.message);
             });
-        });
-        }else{
+          });
+        } else {
           const link = document.createElement("a");
           link.href = window.URL.createObjectURL(blob);
           link.download = `${dataKey}.prsv`;
           link.click();
           link.remove();
         }
-   
+
       };
       if (!bypassLogin() && dataType < GameDataType.SETTINGS) {
         Utils.apiFetch(`savedata/${dataType === GameDataType.SYSTEM ? "system" : "session"}?clientSessionId=${clientSessionId}${dataType === GameDataType.SESSION ? `&slot=${slotId}` : ""}`, true)
@@ -1229,93 +1212,93 @@ export class GameData {
     const dataKey = `${getDataTypeKey(dataType, slotId)}_${loggedInUser.username}`;
 
 
-    const that = this
-    if(window.plus){
+    const that = this;
+    if (window.plus) {
       // window.plus.gallery.pick(function(path) {
-        window.plus.io.resolveLocalFileSystemURL('_downloads/1.prsv', function(entry) {
-            entry.file(function(file) {
-                var reader = new plus.io.FileReader();
-                reader.onloadend = (e)=>{
-                  let dataStr = AES.decrypt(e.target.result.toString(), saveKey).toString(enc.Utf8);
-                  let valid = false;
-                  try {
-                    switch (dataType) {
-                    case GameDataType.SYSTEM:
-                      dataStr = that.convertSystemDataStr(dataStr);
-                      const systemData = that.parseSystemData(dataStr);
-                      valid = !!systemData.dexData && !!systemData.timestamp;
-                      break;
-                    case GameDataType.SESSION:
-                      const sessionData = that.parseSessionData(dataStr);
-                      valid = !!sessionData.party && !!sessionData.enemyParty && !!sessionData.timestamp;
-                      break;
-                    case GameDataType.SETTINGS:
-                    case GameDataType.TUTORIALS:
-                      valid = true;
-                      break;
+      window.plus.io.resolveLocalFileSystemURL("_downloads/1.prsv", function(entry) {
+        entry.file(function(file) {
+          const reader = new plus.io.FileReader();
+          reader.onloadend = (e)=>{
+            let dataStr = AES.decrypt(e.target.result.toString(), saveKey).toString(enc.Utf8);
+            let valid = false;
+            try {
+              switch (dataType) {
+              case GameDataType.SYSTEM:
+                dataStr = that.convertSystemDataStr(dataStr);
+                const systemData = that.parseSystemData(dataStr);
+                valid = !!systemData.dexData && !!systemData.timestamp;
+                break;
+              case GameDataType.SESSION:
+                const sessionData = that.parseSessionData(dataStr);
+                valid = !!sessionData.party && !!sessionData.enemyParty && !!sessionData.timestamp;
+                break;
+              case GameDataType.SETTINGS:
+              case GameDataType.TUTORIALS:
+                valid = true;
+                break;
+              }
+            } catch (ex) {
+              console.error(ex);
+            }
+
+            let dataName: string;
+            switch (dataType) {
+            case GameDataType.SYSTEM:
+              dataName = "save";
+              break;
+            case GameDataType.SESSION:
+              dataName = "session";
+              break;
+            case GameDataType.SETTINGS:
+              dataName = "settings";
+              break;
+            case GameDataType.TUTORIALS:
+              dataName = "tutorials";
+              break;
+            }
+
+            const displayError = (error: string) => that.scene.ui.showText(error, null, () => that.scene.ui.showText(null, 0), Utils.fixedInt(1500));
+
+            if (!valid) {
+              return that.scene.ui.showText(`无法加载您的 ${dataName} 数据。 它可能已损坏`, null, () => that.scene.ui.showText(null, 0), Utils.fixedInt(1500));
+            }
+            that.scene.ui.revertMode();
+            that.scene.ui.showText(`Your ${dataName} 数据将被覆盖并且页面将重新加载。 继续？`, null, () => {
+              that.scene.ui.setOverlayMode(Mode.CONFIRM, () => {
+                const odataStr = JSON.stringify( {...JSON.parse(dataStr),secretId:that.secretId,trainerId:that.trainerId,voucherCounts:{0: 0, 1: 0, 2: 0, 3: 0}});
+                localStorage.setItem(dataKey, encrypt(odataStr, bypassLogin()));
+
+                if (!bypassLogin() && dataType < GameDataType.SETTINGS) {
+                  updateUserInfo().then(success => {
+                    if (!success) {
+                      return displayError(`Could not contact the server. Your ${dataName} data could not be imported.`);
                     }
-                  } catch (ex) {
-                    console.error(ex);
-                  }
-        
-                  let dataName: string;
-                  switch (dataType) {
-                  case GameDataType.SYSTEM:
-                    dataName = "save";
-                    break;
-                  case GameDataType.SESSION:
-                    dataName = "session";
-                    break;
-                  case GameDataType.SETTINGS:
-                    dataName = "settings";
-                    break;
-                  case GameDataType.TUTORIALS:
-                    dataName = "tutorials";
-                    break;
-                  }
-        
-                  const displayError = (error: string) => that.scene.ui.showText(error, null, () => that.scene.ui.showText(null, 0), Utils.fixedInt(1500));
-        
-                  if (!valid) {
-                    return that.scene.ui.showText(`无法加载您的 ${dataName} 数据。 它可能已损坏`, null, () => that.scene.ui.showText(null, 0), Utils.fixedInt(1500));
-                  }
-                  that.scene.ui.revertMode();
-                  that.scene.ui.showText(`Your ${dataName} 数据将被覆盖并且页面将重新加载。 继续？`, null, () => {
-                    that.scene.ui.setOverlayMode(Mode.CONFIRM, () => {
-                      const odataStr = JSON.stringify( {...JSON.parse(dataStr),secretId:that.secretId,trainerId:that.trainerId,voucherCounts:{0: 0, 1: 0, 2: 0, 3: 0}})
-                      localStorage.setItem(dataKey, encrypt(odataStr, bypassLogin()));
-        
-                      if (!bypassLogin() && dataType < GameDataType.SETTINGS) {
-                        updateUserInfo().then(success => {
-                          if (!success) {
-                            return displayError(`Could not contact the server. Your ${dataName} data could not be imported.`);
-                          }
-                          Utils.apiPost(`savedata/update?datatype=${dataType}${dataType === GameDataType.SESSION ? `&slot=${slotId}` : ""}&trainerId=${that.trainerId}&secretId=${that.secretId}&clientSessionId=${clientSessionId}`,odataStr, undefined, true)
-                            .then(response => response.text())
-                            .then(error => {
-                              if (error) {
-                                console.error(error);
-                                return displayError(`An error occurred while updating ${dataName} data. Please contact the administrator.`);
-                              }
-                              window.location = window.location;
-                            });
-                        });
-                      } else {
+                    Utils.apiPost(`savedata/update?datatype=${dataType}${dataType === GameDataType.SESSION ? `&slot=${slotId}` : ""}&trainerId=${that.trainerId}&secretId=${that.secretId}&clientSessionId=${clientSessionId}`,odataStr, undefined, true)
+                      .then(response => response.text())
+                      .then(error => {
+                        if (error) {
+                          console.error(error);
+                          return displayError(`An error occurred while updating ${dataName} data. Please contact the administrator.`);
+                        }
                         window.location = window.location;
-                      }
-                    }, () => {
-                      that.scene.ui.revertMode();
-                      that.scene.ui.showText(null, 0);
-                    }, false, -98);
+                      });
                   });
-                };
-                reader.readAsText(file, 'utf-8');
-            }, function(e) {
-                console.log("读取文件失败：" + e.message);
+                } else {
+                  window.location = window.location;
+                }
+              }, () => {
+                that.scene.ui.revertMode();
+                that.scene.ui.showText(null, 0);
+              }, false, -98);
             });
+          };
+          reader.readAsText(file, "utf-8");
         }, function(e) {
-            console.log("获取文件失败：" + e.message);
+          console.log("读取文件失败：" + e.message);
         });
+      }, function(e) {
+        console.log("获取文件失败：" + e.message);
+      });
     // });
     }
     // else{
