@@ -77,11 +77,10 @@ export class LoginPhase extends Phase {
 
   start(): void {
     super.start();
-    this.scene.pokerogueVersion = "v1.10";
+    this.scene.pokerogueVersion = "v1.12";
     if (window.plus) {
       this.updown();
     }
-    console.log("this.",this.scene);
 
     const hasSession = !!localStorage.getItem(Utils.sessionIdKey);
     this.scene.ui.setMode(Mode.MESSAGE);
@@ -232,7 +231,9 @@ export class LoginPhase extends Phase {
               const infoOBj = JSON.parse(obj||"{}");
               that.scene.pokerogueConfig = infoOBj;
 
-              const newVerUrl = infoOBj?.[wgtVer];
+              const newVerUrl = infoOBj?.[wgtVer]||infoOBj?.update?.list?.includes(wgtVer)&&infoOBj?.update?.url;
+
+              localStorage.setItem("pokerogue:pokerogueConfig",obj||"{}");
 
               if (wgtVer&&newVerUrl) {
                 window.plus.nativeUI.toast("新资源包下载完成，正在安装中请稍等...", {
@@ -241,9 +242,9 @@ export class LoginPhase extends Phase {
                 const dtask = window.plus.downloader.createDownload( newVerUrl, {method:"GET"}, function(d,status) {
                   if ( status === 200 ) {
                     console.log( "Download wgtu success: " + d.filename );
-                    window.plus.runtime.install(d.filename,{},function() {
-                      window.plus.nativeUI.alert("更新完成,请及时重启",function() {
-                        // window.plus.runtime.restart();
+                    window.plus.runtime.install(d.filename,{force:true},function() {
+                      window.plus.nativeUI.alert("更新完成,点击将重启",function() {
+                        window.plus.runtime.restart();
                       });
                     },function(e) {
                       alert("更新异常请联系管理员");
@@ -258,8 +259,18 @@ export class LoginPhase extends Phase {
               const noticeInfo = infoOBj?.notice?.[wgtVer] || infoOBj?.notice?.all;
 
               if (noticeInfo) {
-                window.plus.nativeUI.alert(noticeInfo);
+                if (noticeInfo!==localStorage.getItem("pokerogue:notice")||infoOBj?.notice?.force) {
+                  window.plus.nativeUI.alert(noticeInfo);
+                  localStorage.setItem("pokerogue:notice",noticeInfo);
+                }
               }
+              const currentVer = infoOBj?.update?.current;
+              if (wgtVer&&currentVer&&currentVer!==wgtVer) {
+                window.plus.nativeUI.toast(`发现新版本${currentVer}请及时更新`, {
+                  duration: "short" // 提示持续时间（short短，long长）
+                });
+              }
+
             }
             break;
           default:
@@ -277,6 +288,21 @@ export class LoginPhase extends Phase {
 
   end(): void {
     this.scene.ui.setMode(Mode.MESSAGE);
+
+
+    // 手动发送pv
+    if (window?.aplus_queue) {
+      window.aplus_queue.push({
+        action: "aplus.sendPV",
+        arguments: [{
+          is_auto: false
+        }, {
+          param1: this.scene.pokerogueVersion,
+          param2: loggedInUser?.username
+        }]
+      });
+
+    }
 
     if (!this.scene.gameData.gender) {
       this.scene.unshiftPhase(new SelectGenderPhase(this.scene));

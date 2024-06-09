@@ -1,5 +1,5 @@
 import BattleScene from "../../battle-scene";
-import { hasTouchscreen, isMobile } from "../../touch-controls";
+// import { hasTouchscreen, isMobile } from "../../touch-controls";
 import { TextStyle, addTextObject } from "../text";
 import { Mode } from "../ui";
 import UiHandler from "../ui-handler";
@@ -7,7 +7,7 @@ import { addWindow } from "../ui-theme";
 import {Button} from "../../enums/buttons";
 import {InputsIcons} from "#app/ui/settings/abstract-control-settings-ui-handler.js";
 import NavigationMenu, {NavigationManager} from "#app/ui/settings/navigationMenu";
-import { Setting, SettingKeys } from "#app/system/settings/settings";
+import { Setting } from "#app/system/settings/settings";
 
 
 /**
@@ -93,7 +93,7 @@ export default class AbstractSettingsUiHandler extends UiHandler {
 
     this.settings
       .forEach((setting, s) => {
-        let settingName = setting.label;
+        let settingName = setting.labelName;
         if (setting?.requireReload) {
           settingName += " (Requires Reload)";
         }
@@ -304,10 +304,10 @@ export default class AbstractSettingsUiHandler extends UiHandler {
   setOptionCursor(settingIndex: integer, cursor: integer, save?: boolean): boolean {
     const setting = this.settings[settingIndex];
 
-    if (setting.key === SettingKeys.Touch_Controls && cursor && hasTouchscreen() && isMobile()) {
-      this.getUi().playError();
-      return false;
-    }
+    // if (setting.key === SettingKeys.Touch_Controls && cursor && hasTouchscreen() && isMobile()) {
+    //   this.getUi().playError();
+    //   return false;
+    // }
 
     const lastCursor = this.optionCursors[settingIndex];
 

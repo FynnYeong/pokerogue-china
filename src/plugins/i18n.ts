@@ -152,7 +152,7 @@ export function initI18n(): void {
   i18next.use(LanguageDetector).use(processor).use(new KoreanPostpositionProcessor()).init({
     lng: lang,
     nonExplicitSupportedLngs: true,
-    fallbackLng: "en",
+    fallbackLng: "zh-CN",
     supportedLngs: ["en", "es", "fr", "it", "de", "zh", "pt", "ko"],
     debug: true,
     interpolation: {

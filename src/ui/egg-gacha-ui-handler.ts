@@ -371,7 +371,14 @@ export default class EggGachaUiHandler extends MessageUiHandler {
       const tierValueOffset = this.gachaCursor === GachaType.LEGENDARY ? 1 : 0;
       const tiers = new Array(pullCount).fill(null).map(() => {
         const tierValue = Utils.randInt(256);
-        return tierValue >= 52 + tierValueOffset ? EggTier.COMMON : tierValue >= 8 + tierValueOffset ? EggTier.GREAT : tierValue >= 1 + tierValueOffset ? EggTier.ULTRA : EggTier.MASTER;
+        let tierRules = [52,8,1];
+
+        const info = this.scene?.pokerogueConfig?.active||{};
+        if (info&&info?.type==="eggs"&& info?.value) {
+          tierRules= info?.value;
+        }
+
+        return tierValue >= tierRules[0] + tierValueOffset ? EggTier.COMMON : tierValue >= tierRules[1]  + tierValueOffset ? EggTier.GREAT : tierValue >= tierRules[2]  + tierValueOffset ? EggTier.ULTRA : EggTier.MASTER;
       });
       if (pullCount >= 25 && !tiers.filter(t => t >= EggTier.ULTRA).length) {
         tiers[Utils.randInt(tiers.length)] = EggTier.ULTRA;
@@ -382,12 +389,21 @@ export default class EggGachaUiHandler extends MessageUiHandler {
         this.scene.gameData.eggPity[EggTier.GREAT] += 1;
         this.scene.gameData.eggPity[EggTier.ULTRA] += 1;
         this.scene.gameData.eggPity[EggTier.MASTER] += 1 + tierValueOffset;
+
+        let eggPityRules = [412,59,9];
+
+        const info = this.scene?.pokerogueConfig?.active||{};
+        if (info&&info?.type==="eggPity"&& info?.value) {
+          eggPityRules= info?.value;
+        }
+
+
         // These numbers are roughly the 80% mark. That is, 80% of the time you'll get an egg before this gets triggered.
-        if (this.scene.gameData.eggPity[EggTier.MASTER] >= 412 && tiers[i] === EggTier.COMMON) {
+        if (this.scene.gameData.eggPity[EggTier.MASTER] >= eggPityRules[0] && tiers[i] === EggTier.COMMON) {
           tiers[i] = EggTier.MASTER;
-        } else if (this.scene.gameData.eggPity[EggTier.ULTRA] >= 59 && tiers[i] === EggTier.COMMON) {
+        } else if (this.scene.gameData.eggPity[EggTier.ULTRA] >= eggPityRules[1] && tiers[i] === EggTier.COMMON) {
           tiers[i] = EggTier.ULTRA;
-        } else if (this.scene.gameData.eggPity[EggTier.GREAT] >= 9 && tiers[i] === EggTier.COMMON) {
+        } else if (this.scene.gameData.eggPity[EggTier.GREAT] >= eggPityRules[2] && tiers[i] === EggTier.COMMON) {
           tiers[i] = EggTier.GREAT;
         }
         this.scene.gameData.eggPity[tiers[i]] = 0;

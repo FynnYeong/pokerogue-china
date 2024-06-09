@@ -2,170 +2,170 @@ import { AchievementTranslationEntries } from "#app/plugins/i18n.js";
 
 export const achv: AchievementTranslationEntries = {
   "Achievements": {
-    name: "Achievements",
+    name: "成就",
   },
   "Locked": {
-    name: "Locked",
+    name: "未解锁",
   },
 
   "MoneyAchv": {
-    description: "Accumulate a total of ₽{{moneyAmount}}",
+    description: "累计总共 ₽{{moneyAmount}}",
   },
   "10K_MONEY": {
-    name: "Money Haver",
+    name: "有钱人",
   },
   "100K_MONEY": {
-    name: "Rich",
+    name: "富有",
   },
   "1M_MONEY": {
-    name: "Millionaire",
+    name: "百万富翁",
   },
   "10M_MONEY": {
-    name: "One Percenter",
+    name: "亿万富翁",
   },
 
   "DamageAchv": {
-    description: "Inflict {{damageAmount}} damage in one hit",
+    description: "在一次攻击中造成 {{damageAmount}} 伤害",
   },
   "250_DMG": {
-    name: "Hard Hitter",
+    name: "重击者",
   },
   "1000_DMG": {
-    name: "Harder Hitter",
+    name: "更强的重击者",
   },
   "2500_DMG": {
-    name: "That's a Lotta Damage!",
+    name: "巨额伤害",
   },
   "10000_DMG": {
-    name: "One Punch Man",
+    name: "一拳超人",
   },
 
   "HealAchv": {
-    description: "Heal {{healAmount}} {{HP}} at once with a move, ability, or held item",
+    description: "通过招式、技能或携带道具一次性恢复 {{healAmount}} {{HP}}",
   },
   "250_HEAL": {
-    name: "Novice Healer",
+    name: "初级治疗者",
   },
   "1000_HEAL": {
-    name: "Big Healer",
+    name: "高级治疗者",
   },
   "2500_HEAL": {
-    name: "Cleric",
+    name: "牧师",
   },
   "10000_HEAL": {
-    name: "Recovery Master",
+    name: "恢复大师",
   },
 
   "LevelAchv": {
-    description: "Level up a Pokémon to Lv{{level}}",
+    description: "将宝可梦升级到 Lv{{level}}",
   },
   "LV_100": {
-    name: "But Wait, There's More!",
+    name: "但这还没完！",
   },
   "LV_250": {
-    name: "Elite",
+    name: "精英",
   },
   "LV_1000": {
-    name: "To Go Even Further Beyond",
+    name: "突破极限",
   },
 
   "RibbonAchv": {
-    description: "Accumulate a total of {{ribbonAmount}} Ribbons",
+    description: "累计获得 {{ribbonAmount}} 个缎带",
   },
   "10_RIBBONS": {
-    name: "Pokémon League Champion",
+    name: "宝可梦联盟冠军",
   },
   "25_RIBBONS": {
-    name: "Great League Champion",
+    name: "高级联盟冠军",
   },
   "50_RIBBONS": {
-    name: "Ultra League Champion",
+    name: "超级联盟冠军",
   },
   "75_RIBBONS": {
-    name: "Rogue League Champion",
+    name: "流浪联盟冠军",
   },
   "100_RIBBONS": {
-    name: "Master League Champion",
+    name: "大师联盟冠军",
   },
 
   "TRANSFER_MAX_BATTLE_STAT": {
-    name: "Teamwork",
-    description: "Baton pass to another party member with at least one stat maxed out",
+    name: "团队合作",
+    description: "接力棒传递给至少一项属性满值的队员",
   },
   "MAX_FRIENDSHIP": {
-    name: "Friendmaxxing",
-    description: "Reach max friendship on a Pokémon",
+    name: "友谊满分",
+    description: "与宝可梦达到最高友好度",
   },
   "MEGA_EVOLVE": {
-    name: "Megamorph",
-    description: "Mega evolve a Pokémon",
+    name: "超级进化",
+    description: "让宝可梦进行超级进化",
   },
   "GIGANTAMAX": {
-    name: "Absolute Unit",
-    description: "Gigantamax a Pokémon",
+    name: "巨无霸",
+    description: "让宝可梦进行极巨化",
   },
   "TERASTALLIZE": {
-    name: "STAB Enthusiast",
-    description: "Terastallize a Pokémon",
+    name: "属性狂热者",
+    description: "让宝可梦进行太晶化",
   },
   "STELLAR_TERASTALLIZE": {
-    name: "The Hidden Type",
-    description: "Stellar Terastallize a Pokémon",
+    name: "隐藏属性",
+    description: "让宝可梦进行星光太晶化",
   },
   "SPLICE": {
-    name: "Infinite Fusion",
-    description: "Splice two Pokémon together with DNA Splicers",
+    name: "无限融合",
+    description: "使用DNA融合器将两只宝可梦融合",
   },
   "MINI_BLACK_HOLE": {
-    name: "A Hole Lot of Items",
-    description: "Acquire a Mini Black Hole",
+    name: "物品黑洞",
+    description: "获得一个小型黑洞",
   },
   "CATCH_MYTHICAL": {
-    name: "Mythical",
-    description: "Catch a mythical Pokémon",
+    name: "神秘宝可梦",
+    description: "捕捉一只神秘宝可梦",
   },
   "CATCH_SUB_LEGENDARY": {
-    name: "(Sub-)Legendary",
-    description: "Catch a sub-legendary Pokémon",
+    name: "准传奇宝可梦",
+    description: "捕捉一只准传奇宝可梦",
   },
   "CATCH_LEGENDARY": {
-    name: "Legendary",
-    description: "Catch a legendary Pokémon",
+    name: "传奇宝可梦",
+    description: "捕捉一只传奇宝可梦",
   },
   "SEE_SHINY": {
-    name: "Shiny",
-    description: "Find a shiny Pokémon in the wild",
+    name: "闪光宝可梦",
+    description: "在野外发现一只闪光宝可梦",
   },
   "SHINY_PARTY": {
-    name: "That's Dedication",
-    description: "Have a full party of shiny Pokémon",
+    name: "全闪光队伍",
+    description: "拥有一个全闪光宝可梦的队伍",
   },
   "HATCH_MYTHICAL": {
-    name: "Mythical Egg",
-    description: "Hatch a mythical Pokémon from an egg",
+    name: "神秘蛋",
+    description: "从蛋中孵化一只神秘宝可梦",
   },
   "HATCH_SUB_LEGENDARY": {
-    name: "Sub-Legendary Egg",
-    description: "Hatch a sub-legendary Pokémon from an egg",
+    name: "准传奇蛋",
+    description: "从蛋中孵化一只准传奇宝可梦",
   },
   "HATCH_LEGENDARY": {
-    name: "Legendary Egg",
-    description: "Hatch a legendary Pokémon from an egg",
+    name: "传奇蛋",
+    description: "从蛋中孵化一只传奇宝可梦",
   },
   "HATCH_SHINY": {
-    name: "Shiny Egg",
-    description: "Hatch a shiny Pokémon from an egg",
+    name: "闪光蛋",
+    description: "从蛋中孵化一只闪光宝可梦",
   },
   "HIDDEN_ABILITY": {
-    name: "Hidden Potential",
-    description: "Catch a Pokémon with a hidden ability",
+    name: "隐藏潜力",
+    description: "捕捉一只拥有隐藏能力的宝可梦",
   },
   "PERFECT_IVS": {
-    name: "Certificate of Authenticity",
-    description: "Get perfect IVs on a Pokémon",
+    name: "鉴定书",
+    description: "获得一只六项全满的宝可梦",
   },
   "CLASSIC_VICTORY": {
-    name: "Undefeated",
-    description: "Beat the game in classic mode",
+    name: "无敌",
+    description: "在经典模式中通关",
   },
 } as const;

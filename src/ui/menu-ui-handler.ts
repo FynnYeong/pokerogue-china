@@ -189,27 +189,61 @@ export default class MenuUiHandler extends MessageUiHandler {
       options: manageDataOptions
     };
 
+    const communityExtra= JSON.parse(localStorage.getItem("pokerogue:pokerogueConfig")||"{}")?.community||[];
+
+    const handlePerview = (url:string,isAll?:boolean)=>{
+      if (window.plus) {
+        const webview = window.plus.webview.create(url, "webview", {
+          top: "0px",       // 距离页面顶部的距离
+          bottom: "0px",     // 距离页面底部的距离
+          width: "100%",     // WebView 的宽度
+          height:isAll?"100%":"90%"      // WebView 的高度
+        });
+
+        // 显示 WebView 窗口
+        webview.show();
+        document.getElementById("closeWebViewsButton").style.display = "block";
+      } else {
+        window.open(url, "_blank").focus();
+      }
+    };
     const communityOptions: OptionSelectItem[] = [
-      {
-        label: "Wiki",
+      ...(communityExtra?communityExtra.map(i=>({
+        label: i?.label,
         handler: () => {
-          window.open(wikiUrl, "_blank").focus();
+          handlePerview(i.url,i.isAll);
+          return true;
+        },
+        keepOpen: true
+      })):[]),
+      {
+        label: "B站wiki",
+        handler: () => {
+          handlePerview("https://wiki.biligame.com/pokerogue");
           return true;
         },
         keepOpen: true
       },
       {
-        label: "Discord",
+        label: "官方Wiki",
         handler: () => {
-          window.open(discordUrl, "_blank").focus();
+          handlePerview(wikiUrl);
           return true;
         },
         keepOpen: true
       },
       {
-        label: "GitHub",
+        label: "官方Discord",
         handler: () => {
-          window.open(githubUrl, "_blank").focus();
+          handlePerview(discordUrl);
+          return true;
+        },
+        keepOpen: true
+      },
+      {
+        label: "官方GitHub",
+        handler: () => {
+          handlePerview(githubUrl);
           return true;
         },
         keepOpen: true

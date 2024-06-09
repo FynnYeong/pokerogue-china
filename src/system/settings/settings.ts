@@ -26,6 +26,7 @@ export enum SettingType {
 export interface Setting {
   key: string
   label: string
+  labelName: string
   options: Array<string>
   default: number
   type: SettingType
@@ -76,6 +77,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.Game_Speed,
     label: "Game Speed",
+    labelName: "游戏速度",
     options: ["1x", "1.25x", "1.5x", "2x", "2.5x", "3x", "4x", "5x"],
     default: 3,
     type: SettingType.GENERAL
@@ -83,6 +85,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.HP_Bar_Speed,
     label: "HP Bar Speed",
+    labelName: "生命条速度",
     options: ["Normal", "Fast", "Faster", "Skip"],
     default: 0,
     type: SettingType.GENERAL
@@ -90,6 +93,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.EXP_Gains_Speed,
     label: "EXP Gains Speed",
+    labelName: "经验获取速度",
     options: ["Normal", "Fast", "Faster", "Skip"],
     default: 0,
     type: SettingType.GENERAL
@@ -97,6 +101,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.EXP_Party_Display,
     label: "EXP Party Display",
+    labelName: "经验队伍显示",
     options: ["Normal", "Level Up Notification", "Skip"],
     default: 0,
     type: SettingType.GENERAL
@@ -104,6 +109,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.Skip_Seen_Dialogues,
     label: "Skip Seen Dialogues",
+    labelName: "跳过已读对话",
     options: OFF_ON,
     default: 0,
     type: SettingType.GENERAL
@@ -111,6 +117,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.Battle_Style,
     label: "Battle Style",
+    labelName: "战斗风格",
     options: ["Switch", "Set"],
     default: 0,
     type: SettingType.GENERAL
@@ -118,6 +125,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.Enable_Retries,
     label: "Enable Retries",
+    labelName: "启用重试",
     options: OFF_ON,
     default: 0,
     type: SettingType.GENERAL
@@ -125,6 +133,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.Tutorials,
     label: "Tutorials",
+    labelName: "教程",
     options: OFF_ON,
     default: 1,
     type: SettingType.GENERAL
@@ -132,6 +141,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.Touch_Controls,
     label: "Touch Controls",
+    labelName: "禁用透明按键",
     options: AUTO_DISABLED,
     default: 0,
     type: SettingType.GENERAL
@@ -139,6 +149,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.Vibration,
     label: "Vibration",
+    labelName: "震动",
     options: AUTO_DISABLED,
     default: 0,
     type: SettingType.GENERAL
@@ -146,6 +157,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.Language,
     label: "Language",
+    labelName: "语言",
     options: ["English", "Change"],
     default: 0,
     type: SettingType.DISPLAY,
@@ -154,6 +166,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.UI_Theme,
     label: "UI Theme",
+    labelName: "用户界面主题",
     options: ["Default", "Legacy"],
     default: 0,
     type: SettingType.DISPLAY,
@@ -162,6 +175,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.Window_Type,
     label: "Window Type",
+    labelName: "窗口类型",
     options: new Array(5).fill(null).map((_, i) => (i + 1).toString()),
     default: 0,
     type: SettingType.DISPLAY
@@ -169,6 +183,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.Money_Format,
     label: "Money Format",
+    labelName: "金钱格式",
     options: ["Normal", "Abbreviated"],
     default: 0,
     type: SettingType.DISPLAY
@@ -176,6 +191,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.Damage_Numbers,
     label: "Damage Numbers",
+    labelName: "伤害数字",
     options: ["Off", "Simple", "Fancy"],
     default: 0,
     type: SettingType.DISPLAY
@@ -183,6 +199,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.Move_Animations,
     label: "Move Animations",
+    labelName: "技能动画",
     options: OFF_ON,
     default: 1,
     type: SettingType.DISPLAY
@@ -190,6 +207,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.Show_Stats_on_Level_Up,
     label: "Show Stats on Level Up",
+    labelName: "升级时显示属性",
     options: OFF_ON,
     default: 1,
     type: SettingType.DISPLAY
@@ -197,6 +215,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.Candy_Upgrade_Notification,
     label: "Candy Upgrade Notification",
+    labelName: "糖果升级通知",
     options: ["Off", "Passives Only", "On"],
     default: 0,
     type: SettingType.DISPLAY
@@ -204,6 +223,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.Candy_Upgrade_Display,
     label: "Candy Upgrade Display",
+    labelName: "糖果升级显示",
     options: ["Icon", "Animation"],
     default: 0,
     type: SettingType.DISPLAY,
@@ -212,6 +232,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.Move_Info,
     label: "Move Info",
+    labelName: "技能信息",
     options: OFF_ON,
     default: 1,
     type: SettingType.DISPLAY
@@ -219,6 +240,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.Show_Moveset_Flyout,
     label: "Show Moveset Flyout",
+    labelName: "显示技能集飞出",
     options: OFF_ON,
     default: 1,
     type: SettingType.DISPLAY
@@ -226,6 +248,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.Show_Arena_Flyout,
     label: "Show Battle Effects Flyout",
+    labelName: "显示战斗效果飞出",
     options: OFF_ON,
     default: 1,
     type: SettingType.DISPLAY
@@ -233,6 +256,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.Show_Time_Of_Day_Widget,
     label: "Show Time of Day Widget",
+    labelName: "显示时段小部件",
     options: OFF_ON,
     default: 1,
     type: SettingType.DISPLAY,
@@ -241,6 +265,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.Time_Of_Day_Animation,
     label: "Time of Day Animation",
+    labelName: "时段动画",
     options: ["Bounce", "Back"],
     default: 0,
     type: SettingType.DISPLAY
@@ -248,6 +273,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.Sprite_Set,
     label: "Sprite Set",
+    labelName: "精灵组",
     options: ["Consistent", "Mixed Animated"],
     default: 0,
     type: SettingType.DISPLAY,
@@ -256,6 +282,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.Fusion_Palette_Swaps,
     label: "Fusion Palette Swaps",
+    labelName: "融合调色板交换",
     options: OFF_ON,
     default: 1,
     type: SettingType.DISPLAY
@@ -263,6 +290,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.Player_Gender,
     label: "Player Gender",
+    labelName: "玩家性别",
     options: ["Boy", "Girl"],
     default: 0,
     type: SettingType.DISPLAY
@@ -270,6 +298,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.Master_Volume,
     label: "Master Volume",
+    labelName: "主音量",
     options: VOLUME_OPTIONS,
     default: 5,
     type: SettingType.AUDIO
@@ -277,6 +306,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.BGM_Volume,
     label: "BGM Volume",
+    labelName: "背景音乐音量",
     options: VOLUME_OPTIONS,
     default: 10,
     type: SettingType.AUDIO
@@ -284,11 +314,13 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.SE_Volume,
     label: "SE Volume",
+    labelName: "音效音量",
     options: VOLUME_OPTIONS,
     default: 10,
     type: SettingType.AUDIO
   }
 ];
+
 
 /**
  * Return the index of a Setting
@@ -426,7 +458,7 @@ export function setSetting(scene: BattleScene, setting: string, value: integer):
     }
     break;
   case SettingKeys.Touch_Controls:
-    scene.enableTouchControls = Setting[index].options[value] !== "Disabled" && hasTouchscreen();
+    scene.enableTouchControls = Setting[index].options[value] !== "Disabled" ;
     const touchControls = document.getElementById("touchControls");
     if (touchControls) {
       touchControls.classList.toggle("visible", scene.enableTouchControls);

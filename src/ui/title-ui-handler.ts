@@ -111,22 +111,15 @@ export default class TitleUiHandler extends OptionSelectUiHandler {
     const ret = super.show(args);
 
     if (ret) {
-      let info = this.scene?.pokerogueConfig?.messages;
+      const info = this.scene?.pokerogueConfig?.messages;
 
-  
+
 
       if (info?.length) {
         localStorage.setItem("pokerouge_messages", JSON.stringify(info));
       }
 
-      let arr =!!this.scene?.pokerogueConfig?.messages ? JSON.parse(localStorage.getItem("pokerouge_messages")||"[]")  : [];
-      if (new Date() < new Date(Date.UTC(2024, 6, 7, 0))&&!this.scene?.pokerogueConfig?.messages) {
-        arr = [
-          "天然鸟的预言:双倍闪光能量即将在6.3降临",
-          "据调查本次双倍闪光能量来源于爱情之力",
-          "双倍闪光能量将会影响野外宝可梦和即将孵化的蛋",
-        ]
-      }
+      const arr =!!this.scene?.pokerogueConfig?.messages ? JSON.parse(localStorage.getItem("pokerouge_messages")||"[]")  : [];
       this.splashMessage = Utils.randItem(getSplashMessages(arr));
       this.splashMessageText.setText(
         this.splashMessage.replace("{COUNT}", "?")

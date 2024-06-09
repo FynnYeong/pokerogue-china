@@ -24,6 +24,21 @@
 			font-family: 'pkmnems';
 			src: url('./fonts/pkmnems.ttf') format('truetype');
 		}
+
+		#closeWebViewsButton {
+            display: none; /* 初始隐藏 */
+            position: fixed;
+            bottom: 5px;
+            left: 50%;
+			transform: translateX(-50%);
+            padding: 8px 15px;
+            background-color: #000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1000; /* 确保按钮在最上层 */
+        }
 	</style>
 	<link rel="stylesheet" type="text/css" href="./index.css" />
 	<link rel="manifest" href="./manifest.webmanifest">
@@ -46,16 +61,39 @@
       e.preventDefault();
     });
   </script>
+
+<script>
+	(function(w, d, s, q, i) {
+	w[q] = w[q] || [];
+	var f = d.getElementsByTagName(s)[0],j = d.createElement(s);
+	j.async = true;
+	j.id = 'beacon-aplus';
+	j.src = 'https://d.alicdn.com/alilog/mlog/aplus/' + i + '.js';
+	f.parentNode.insertBefore(j, f);
+   })(window, document, 'script', 'aplus_queue', '203467608');
+ 
+	 //集成应用的appKey
+	 aplus_queue.push({
+	   action: 'aplus.setMetaInfo',
+	   arguments: ['appKey', '66652d2ccac2a664de45ac94']
+	 });
+   </script>
 </head>
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-QZ1Z9TDTRZ"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-QZ1Z9TDTRZ');
+  function closeAllWebViews() {
+	if(window.plus){
+		// 获取当前应用的所有 WebView 窗口
+		var allWebviews = window.plus.webview.all();
+		document.getElementById('closeWebViewsButton').style.display = 'none';
+		for (var i = 0; i < allWebviews.length; i++) {
+			// 排除主窗口，防止关闭自身
+			if (allWebviews[i].id !== plus.webview.getLaunchWebview().id) {
+				allWebviews[i].close();
+			}
+		}
+	}
+        }
 </script>
 <body>
 	<div id="app"></div>
@@ -110,6 +148,7 @@
 			</div>
 		</div>
 	</div>
+	<button id="closeWebViewsButton" onclick="closeAllWebViews()">X</button>
 	<script type="module" src="./src/main.ts"></script>
 	<script src="./src/touch-controls.ts" type="module"></script>
 	<script src="./src/debug.js" type="module"></script>
