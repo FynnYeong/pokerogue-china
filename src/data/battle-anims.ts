@@ -454,8 +454,8 @@ export function initCommonAnims(scene: BattleScene): Promise<void> {
       const commonAnimId = commonAnimIds[ca];
       try {
         commonAnimFetches.push(scene.cachedFetch(`./battle-anims/common-${commonAnimNames[ca].toLowerCase().replace(/\_/g, "-")}.json`)
-        .then(response => response.json())
-        .then(cas => commonAnims.set(commonAnimId, new AnimConfig(cas))));
+          .then(response => response.json())
+          .then(cas => commonAnims.set(commonAnimId, new AnimConfig(cas))));
       } catch (error) {
         //
       }
@@ -500,7 +500,7 @@ export function initMoveAnim(scene: BattleScene, move: Moves): Promise<void> {
             if (Array.isArray(ba)) {
               populateMoveAnim(move, ba[0]);
               populateMoveAnim(move, ba[1]);
-            } else {
+            } else if (ba) {
               populateMoveAnim(move, ba);
             }
             const chargeAttr = allMoves[move].getAttrs(ChargeAttr)[0] || allMoves[move].getAttrs(DelayedAttackAttr)[0];

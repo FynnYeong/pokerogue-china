@@ -876,7 +876,7 @@ export default abstract class Pokemon extends Phaser.GameObjects.Container {
       }
     }
 
-    if (forDefend && (this.getTag(BattlerTagType.IGNORE_FLYING) || this.scene.arena.getTag(ArenaTagType.GRAVITY) || this.getTag(BattlerTagType.GROUNDED))) {
+    if (forDefend && (this.getTag(BattlerTagType.IGNORE_FLYING) || this.scene?.arena.getTag(ArenaTagType.GRAVITY) || this.getTag(BattlerTagType.GROUNDED))) {
       const flyingIndex = types.indexOf(Type.FLYING);
       if (flyingIndex > -1) {
         types.splice(flyingIndex, 1);
@@ -1052,7 +1052,7 @@ export default abstract class Pokemon extends Phaser.GameObjects.Container {
   }
 
   getTeraType(): Type {
-    const teraModifier = this.scene.findModifier(m => m instanceof TerastallizeModifier
+    const teraModifier = this.scene?.findModifier(m => m instanceof TerastallizeModifier
       && m.pokemonId === this.id && !!m.getBattlesLeft(), this.isPlayer()) as TerastallizeModifier;
     if (teraModifier) {
       return teraModifier.teraType;
@@ -1280,13 +1280,11 @@ export default abstract class Pokemon extends Phaser.GameObjects.Container {
     } else {
       shinyThreshold.value = thresholdOverride;
     }
-    console.log("this222333",this.scene);
     // 闪光活动
     const info = this.scene?.pokerogueConfig?.active||{};
     if (info&&info?.type==="shiny") {
       shinyThreshold.value *=info?.shinyValue|| 2;
     }
-    console.log("shinyThreshold.value ",shinyThreshold.value,window,window.pokerogue_activity );
 
     this.shiny = (E ^ F) < shinyThreshold.value;
     if ((E ^ F) < 32) {

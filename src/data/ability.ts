@@ -2047,7 +2047,7 @@ export class BattlerTagImmunityAbAttr extends PreApplyBattlerTagAbAttr {
   }
 
   getTriggerMessage(pokemon: Pokemon, abilityName: string, ...args: any[]): string {
-    return getPokemonMessage(pokemon, `'s ${abilityName}\nprevents ${(args[0] as BattlerTag).getDescriptor()}!`);
+    return getPokemonMessage(pokemon, `'s ${abilityName}\nprevents ${(args[0] as BattlerTag)?.getDescriptor()}!`);
   }
 }
 
@@ -3483,7 +3483,7 @@ function applyAbAttrsInternal<TAttr extends AbAttr>(attrType: { new(...args: any
     const attrs = ability.getAttrs(attrType);
 
     const clearSpliceQueueAndResolve = () => {
-      pokemon.scene.clearPhaseQueueSplice();
+      pokemon.scene?.clearPhaseQueueSplice();
       if (!passive) {
         return applyAbAttrsInternal(attrType, pokemon, applyFunc, args, isAsync, showAbilityInstant, quiet, true).then(() => resolve());
       } else {
@@ -3671,7 +3671,7 @@ function canApplyAttr(pokemon: Pokemon, attr: AbAttr): boolean {
 
 function queueShowAbility(pokemon: Pokemon, passive: boolean): void {
   pokemon.scene.unshiftPhase(new ShowAbilityPhase(pokemon.scene, pokemon.id, passive));
-  pokemon.scene.clearPhaseQueueSplice();
+  pokemon.scene?.clearPhaseQueueSplice();
 }
 
 export const allAbilities = [ new Ability(Abilities.NONE, 3) ];
