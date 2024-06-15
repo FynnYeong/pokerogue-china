@@ -64,6 +64,22 @@ export default class CommandUiHandler extends UiHandler {
     messageHandler.movesWindowContainer.setVisible(false);
     messageHandler.message.setWordWrapWidth(1110);
     messageHandler.showText(i18next.t("commandUiHandler:actionMessage", {pokemonName: commandPhase.getPokemon().name}), 0);
+
+    const textures = this.scene.textures.list;
+    let isBigDataTexture = false;
+    for (const key in textures) {
+      if (textures.hasOwnProperty(key)) {
+        const texture = textures[key];
+        if (texture?.buffer?.byteLength>700000) {
+          if (isBigDataTexture) {
+            console.log(`Removing unused texture: ${key}`);
+            this.scene.textures.remove(key);
+          }
+          isBigDataTexture=true;
+        }
+      }
+    }
+
     this.setCursor(this.getCursor());
 
     return true;

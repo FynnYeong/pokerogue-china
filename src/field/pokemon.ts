@@ -2159,7 +2159,7 @@ export default abstract class Pokemon extends Phaser.GameObjects.Container {
   }
 
   getMoveQueue(): QueuedMove[] {
-    return this.summonData.moveQueue;
+    return this.summonData?.moveQueue;
   }
 
   changeForm(formChange: SpeciesFormChange): Promise<void> {
