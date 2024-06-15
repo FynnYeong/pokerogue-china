@@ -1251,7 +1251,6 @@ export class GameData {
             let dataStr = AES.decrypt(e.target.result.toString(), saveKey).toString(enc.Utf8);
             let valid = false;
             try {
-              dataName = GameDataType[dataType].toLowerCase();
               switch (dataType) {
               case GameDataType.SYSTEM:
                 dataStr = that.convertSystemDataStr(dataStr);

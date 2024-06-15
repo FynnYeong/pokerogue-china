@@ -300,6 +300,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.Type_Hints,
     label: "Type hints",
+    labelName: "类型提示",
     options: OFF_ON,
     default: 0,
     type: SettingType.DISPLAY
@@ -331,6 +332,7 @@ export const Setting: Array<Setting> = [
   {
     key: SettingKeys.Music_Preference,
     label: "Music Preference",
+    labelName: "音乐偏好",
     options: ["Consistent", "Mixed"],
     default: 0,
     type: SettingType.AUDIO,

@@ -43,38 +43,42 @@ export default class TitleUiHandler extends OptionSelectUiHandler {
     logo.setOrigin(0.5, 0);
     this.titleContainer.add(logo);
 
-    if (this.scene.eventManager.isEventActive()) {
-      const event = this.scene.eventManager.activeEvent();
-      const banner = this.scene.add.image(29, 64, event.bannerFilename);
-      banner.setName("img-event-banner");
-      banner.setOrigin(0, 0);
-      banner.setScale(0.07);
-      const bannerShadow = this.scene.add.rectangle(
-        banner.x - 2,
-        banner.y + 2,
-        banner.width,
-        banner.height,
-        0x484848
-      );
-      bannerShadow.setName("rect-event-banner-shadow");
-      bannerShadow.setScale(0.07);
-      bannerShadow.setAlpha(0.5);
-      bannerShadow.setOrigin(0,0);
-      this.eventTimerText = addTextObject(
-        this.scene,
-        banner.x + 8,
-        banner.y + 100,
-        this.timeToGo(event.endDate),
-        TextStyle.WINDOW
-      );
-      this.eventTimerText.setName("text-event-timer");
-      this.eventTimerText.setScale(0.15);
-      this.eventTimerText.setOrigin(0,0);
+    this.dailyRunScoreboard = new DailyRunScoreboard(this.scene, 1, 44);
+    this.dailyRunScoreboard.setup();
+    this.titleContainer.add(this.dailyRunScoreboard);
 
-      this.titleContainer.add(bannerShadow);
-      this.titleContainer.add(banner);
-      this.titleContainer.add(this.eventTimerText);
-    }
+    // if (this.scene.eventManager.isEventActive()) {
+    //   const event = this.scene.eventManager.activeEvent();
+    //   const banner = this.scene.add.image(29, 64, event.bannerFilename);
+    //   banner.setName("img-event-banner");
+    //   banner.setOrigin(0, 0);
+    //   banner.setScale(0.07);
+    //   const bannerShadow = this.scene.add.rectangle(
+    //     banner.x - 2,
+    //     banner.y + 2,
+    //     banner.width,
+    //     banner.height,
+    //     0x484848
+    //   );
+    //   bannerShadow.setName("rect-event-banner-shadow");
+    //   bannerShadow.setScale(0.07);
+    //   bannerShadow.setAlpha(0.5);
+    //   bannerShadow.setOrigin(0,0);
+    //   this.eventTimerText = addTextObject(
+    //     this.scene,
+    //     banner.x + 8,
+    //     banner.y + 100,
+    //     this.timeToGo(event.endDate),
+    //     TextStyle.WINDOW
+    //   );
+    //   this.eventTimerText.setName("text-event-timer");
+    //   this.eventTimerText.setScale(0.15);
+    //   this.eventTimerText.setOrigin(0,0);
+
+    //   this.titleContainer.add(bannerShadow);
+    //   this.titleContainer.add(banner);
+    //   this.titleContainer.add(this.eventTimerText);
+    // }
 
     this.playerCountLabel = addTextObject(
       this.scene,
@@ -182,15 +186,15 @@ export default class TitleUiHandler extends OptionSelectUiHandler {
 
       const ui = this.getUi();
 
-      // this.dailyRunScoreboard.update();
+      this.dailyRunScoreboard.update();
 
-      if (this.scene.eventManager.isEventActive()) {
-        this.updateCountdown();
+      // if (this.scene.eventManager.isEventActive()) {
+      //   this.updateCountdown();
 
-        this.eventTimer = setInterval(() => {
-          this.updateCountdown();
-        }, 1000);
-      }
+      //   this.eventTimer = setInterval(() => {
+      //     this.updateCountdown();
+      //   }, 1000);
+      // }
 
       this.updateTitleStats();
 

@@ -1318,20 +1318,24 @@ export default abstract class Pokemon extends Phaser.GameObjects.Container {
     const F = rand1 ^ rand2;
 
     const shinyThreshold = new Utils.IntegerHolder(32);
+    // 闪光活动
+    const info = this.scene?.pokerogueConfig?.active||{};
     if (thresholdOverride === undefined) {
-      if (this.scene.eventManager.isEventActive()) {
-        shinyThreshold.value *= this.scene.eventManager.getShinyMultiplier();
+      // if (this.scene.eventManager.isEventActive()) {
+      //   shinyThreshold.value *= this.scene.eventManager.getShinyMultiplier();
+      // }
+      if (info&&info?.type==="shiny") {
+        shinyThreshold.value *= info?.shinyValue || 2;
       }
       if (!this.hasTrainer()) {
         this.scene.applyModifiers(ShinyRateBoosterModifier, true, shinyThreshold);
       }
     } else {
       shinyThreshold.value = thresholdOverride;
-    }
-    // 闪光活动
-    const info = this.scene?.pokerogueConfig?.active||{};
-    if (info&&info?.type==="shiny") {
-      shinyThreshold.value *=info?.shinyValue|| 2;
+
+      if (info&&info?.type==="shiny") {
+        shinyThreshold.value *=info?.shinyEggValue??info?.shinyValue??2;
+      }
     }
 
     this.shiny = (E ^ F) < shinyThreshold.value;

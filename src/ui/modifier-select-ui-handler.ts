@@ -51,7 +51,7 @@ export default class ModifierSelectUiHandler extends AwaitableUiHandler {
     this.transferButtonContainer.setVisible(false);
     ui.add(this.transferButtonContainer);
 
-    const transferButtonText = addTextObject(this.scene, -4, -2, "Transfer", TextStyle.PARTY);
+    const transferButtonText = addTextObject(this.scene, -4, -2, "转移道具", TextStyle.PARTY);
     transferButtonText.setName("text-transfer-btn");
     transferButtonText.setOrigin(1, 0);
     this.transferButtonContainer.add(transferButtonText);
@@ -61,7 +61,7 @@ export default class ModifierSelectUiHandler extends AwaitableUiHandler {
     this.checkButtonContainer.setVisible(false);
     ui.add(this.checkButtonContainer);
 
-    const checkButtonText = addTextObject(this.scene, -4, -2, "Check Team", TextStyle.PARTY);
+    const checkButtonText = addTextObject(this.scene, -4, -2, "检查队伍", TextStyle.PARTY);
     checkButtonText.setName("text-use-btn");
     checkButtonText.setOrigin(1, 0);
     this.checkButtonContainer.add(checkButtonText);
@@ -71,7 +71,7 @@ export default class ModifierSelectUiHandler extends AwaitableUiHandler {
     this.rerollButtonContainer.setVisible(false);
     ui.add(this.rerollButtonContainer);
 
-    const rerollButtonText = addTextObject(this.scene, -4, -2, "Reroll", TextStyle.PARTY);
+    const rerollButtonText = addTextObject(this.scene, -4, -2, "重掷", TextStyle.PARTY);
     rerollButtonText.setName("text-reroll-btn");
     rerollButtonText.setOrigin(0, 0);
     this.rerollButtonContainer.add(rerollButtonText);
@@ -86,7 +86,7 @@ export default class ModifierSelectUiHandler extends AwaitableUiHandler {
     this.lockRarityButtonContainer.setVisible(false);
     ui.add(this.lockRarityButtonContainer);
 
-    this.lockRarityButtonText = addTextObject(this.scene, -4, -2, "Lock Rarities", TextStyle.PARTY);
+    this.lockRarityButtonText = addTextObject(this.scene, -4, -2, "锁定稀有度", TextStyle.PARTY);
     this.lockRarityButtonText.setOrigin(0, 0);
     this.lockRarityButtonContainer.add(this.lockRarityButtonText);
 
