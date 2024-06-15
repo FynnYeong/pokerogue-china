@@ -285,7 +285,7 @@ export const isLocal = false;
 export const localServerUrl = import.meta.env.VITE_SERVER_URL ?? `http://${window.location.hostname}:${window.location.port+1}`;
 
 // Set the server URL based on whether it's local or not
-export const serverUrl = import.meta.env.VITE_SERVERURL;
+export const serverUrl = ()=>window.INSER_VITE_SERVERURL ?? import.meta.env.VITE_SERVERURL;
 // used to disable api calls when isLocal is true and a server is not found
 export let isLocalServerConnected = true;
 
@@ -333,7 +333,7 @@ export function apiFetch(path: string, authed: boolean = false): Promise<Respons
         request["headers"] = { "Authorization": sId };
       }
     }
-    fetch(`${localStorage.getItem("pokerogue:serverAdd")??serverUrl}/${path}`, request)
+    fetch(`${serverUrl()}/${path}`, request)
       .then(response => resolve(response))
       .catch(err => reject(err));
   }) : new Promise(() => {});
@@ -351,7 +351,7 @@ export function apiPost(path: string, data?: any, contentType: string = "applica
         headers["Authorization"] = sId;
       }
     }
-    fetch(`${localStorage.getItem("pokerogue:serverAdd")??serverUrl}/${path}`, { method: "POST", headers: headers, body: data })
+    fetch(`${serverUrl()}/${path}`, { method: "POST", headers: headers, body: data })
       .then(response => resolve(response))
       .catch(err => reject(err));
   }) : new Promise(() => {});

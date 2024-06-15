@@ -100,7 +100,7 @@ export class LoginPhase extends Phase {
             {
               label: i18next.t("menu:serverAddress2"),
               handler: () => {
-                localStorage.setItem("pokerogue:serverAdd", import.meta.env.VITE_SERVERURL);
+                // localStorage.setItem("pokerogue:serverAdd", import.meta.env.VITE_SERVERURL);
                 localStorage.removeItem("pokerogue:offlineMode");
                 this.login();
                 return true;
