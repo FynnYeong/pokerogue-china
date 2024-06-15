@@ -150,6 +150,7 @@ Phaser.GameObjects.Text.prototype.setPositionRelative = setPositionRelative;
 Phaser.GameObjects.Rectangle.prototype.setPositionRelative = setPositionRelative;
 
 document.fonts.load("16px emerald").then(() => document.fonts.load("10px pkmnems"));
+document.fonts.load("12px unifont");
 
 let game;
 
@@ -163,14 +164,14 @@ window.onerror = function(message, source, lineno, colno, error) {
   // 在这里可以进行异常处理，例如上报错误信息到服务器
 };
 
-window.addEventListener('unhandledrejection', function(event) {
+window.addEventListener("unhandledrejection", function(event) {
   // 在这里处理未处理的 Promise 拒绝
-  console.error('Unhandled Promise Rejection:', event.reason);
+  console.error("Unhandled Promise Rejection:", event.reason);
 });
 
-window.addEventListener('error', function(event) {
+window.addEventListener("error", function(event) {
   // 在这里处理全局的 JavaScript 错误
-  console.error('Global JavaScript Error:', event.error);
+  console.error("Global JavaScript Error:", event.error);
 });
 
 

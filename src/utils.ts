@@ -1,6 +1,6 @@
 export const MissingTextureKey = "__MISSING";
 import i18next from "i18next";
-import { MoneyFormat } from "./enums/money-format";
+import { MoneyFormat } from "#enums/money-format";
 
 
 export function toReadableString(str: string): string {

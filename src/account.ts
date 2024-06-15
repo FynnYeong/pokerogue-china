@@ -9,6 +9,10 @@ export interface UserInfo {
 export let loggedInUser: UserInfo = null;
 export const clientSessionId = Utils.randomString(32);
 
+export function initLoggedInUser(): void {
+  loggedInUser = { username: "Guest", lastSessionSlot: -1 };
+}
+
 export function updateUserInfo(): Promise<[boolean, integer]> {
   return new Promise<[boolean, integer]>(resolve => {
     if (bypassLogin()) {
@@ -40,12 +44,12 @@ export function updateUserInfo(): Promise<[boolean, integer]> {
       }
       return response.json();
     }).then(jsonResponse => {
-      if(jsonResponse){
+      if (jsonResponse) {
         loggedInUser = jsonResponse;
-      }else if(!loggedInUser){
-        loggedInUser= { username: "Guest", lastSessionSlot: -1 }
+      } else if (!loggedInUser) {
+        loggedInUser= { username: "Guest", lastSessionSlot: -1 };
       }
-      
+
       resolve([ true, 200 ]);
     }).catch(err => {
       console.error(err);
