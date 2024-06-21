@@ -1,3 +1,5 @@
+import i18next from "i18next";
+
 export enum BattleStat {
   ATK,
   DEF,
@@ -12,19 +14,19 @@ export enum BattleStat {
 export function getBattleStatName(stat: BattleStat) {
   switch (stat) {
   case BattleStat.ATK:
-    return "攻击";
+    return i18next.t("pokemonInfo:Stat.ATK");
   case BattleStat.DEF:
-    return "防御";
+    return i18next.t("pokemonInfo:Stat.DEF");
   case BattleStat.SPATK:
-    return "特攻";
+    return i18next.t("pokemonInfo:Stat.SPATK");
   case BattleStat.SPDEF:
-    return "特防";
+    return i18next.t("pokemonInfo:Stat.SPDEF");
   case BattleStat.SPD:
-    return "速度";
+    return i18next.t("pokemonInfo:Stat.SPD");
   case BattleStat.ACC:
-    return "命中";
+    return i18next.t("pokemonInfo:Stat.ACC");
   case BattleStat.EVA:
-    return "闪避";
+    return i18next.t("pokemonInfo:Stat.EVA");
   default:
     return "???";
   }
@@ -34,30 +36,30 @@ export function getBattleStatLevelChangeDescription(levels: integer, up: boolean
   if (up) {
     switch (levels) {
     case 1:
-      return "提升了";
+      return i18next.t("battle:statRose");
     case 2:
-      return "大幅提升了";
+      return i18next.t("battle:statSharplyRose");
     case 3:
     case 4:
     case 5:
     case 6:
-      return "大幅提升了";
+      return i18next.t("battle:statRoseDrastically");
     default:
-      return "不再提升了";
+      return i18next.t("battle:statWontGoAnyHigher");
     }
   } else {
     switch (levels) {
     case 1:
-      return "下降了";
+      return i18next.t("battle:statFell");
     case 2:
-      return "大幅下降了";
+      return i18next.t("battle:statHarshlyFell");
     case 3:
     case 4:
     case 5:
     case 6:
-      return "大幅下降了";
+      return i18next.t("battle:statSeverelyFell");
     default:
-      return "不再下降了";
+      return i18next.t("battle:statWontGoAnyLower");
     }
   }
 }

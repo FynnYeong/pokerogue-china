@@ -3,7 +3,7 @@ import { ModalConfig } from "./modal-ui-handler";
 import * as Utils from "../utils";
 import { Mode } from "./ui";
 import { TextStyle, addTextObject } from "./text";
-import i18next from "../plugins/i18n";
+import i18next from "i18next";
 
 export default class RegistrationFormUiHandler extends FormModalUiHandler {
   getModalTitle(config?: ModalConfig): string {
@@ -91,7 +91,7 @@ export default class RegistrationFormUiHandler extends FormModalUiHandler {
                 })
                 .then(response => {
                   if (response.hasOwnProperty("token")) {
-                    localStorage.setItem(Utils.sessionIdKey, response.token)
+                    localStorage.setItem(Utils.sessionIdKey, response.token);
                     originalRegistrationAction();
                   } else {
                     onFail(response);

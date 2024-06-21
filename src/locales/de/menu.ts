@@ -1,4 +1,4 @@
-import { SimpleTranslationEntries } from "#app/plugins/i18n";
+import { SimpleTranslationEntries } from "#app/interfaces/locales";
 
 /**
  * The menu namespace holds most miscellaneous text that isn't directly part of the game's
@@ -47,11 +47,15 @@ export const menu: SimpleTranslationEntries = {
   "dailyRankings": "Tägliche Rangliste",
   "weeklyRankings": "Wöchentliche Rangliste",
   "noRankings": "Keine Rangliste",
+  "positionIcon": "#",
+  "usernameScoreboard": "Benutzername",
+  "score": "Punkte",
+  "wave": "Welle",
   "loading": "Lade…",
   "loadingAsset": "Loading asset: {{assetName}}",
   "playersOnline": "Spieler Online",
   "yes":"Ja",
   "no":"Nein",
   "disclaimer": "DISCLAIMER",
-  "disclaimerDescription": "This game is an unfinished product; it might have playability issues (including the potential loss of save data),\n change without notice, and may or may not be updated further or completed."
+  "disclaimerDescription": "Dieses Spiel ist ein unfertiges Produkt. Es kann spielbeinträchtigende Fehler (bis hin zum Verlust des Speicherstandes)\n aufweisen, sich ohne Vorankündigung ändern und es gibt keine Garantie dass es weiterentwickelt oder fertiggestellt wird.",
 } as const;

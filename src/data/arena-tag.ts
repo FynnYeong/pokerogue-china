@@ -636,6 +636,11 @@ export class GravityTag extends ArenaTag {
 
   onAdd(arena: Arena): void {
     arena.scene.queueMessage("重力增强了！");
+    arena.scene.getField(true).forEach((pokemon) => {
+      if (pokemon !== null) {
+        pokemon.removeTag(BattlerTagType.MAGNET_RISEN);
+      }
+    });
   }
 
   onRemove(arena: Arena): void {
