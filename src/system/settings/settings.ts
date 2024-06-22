@@ -1,7 +1,7 @@
 import { Mode } from "#app/ui/ui";
 import i18next from "i18next";
 import BattleScene from "../../battle-scene";
-import { hasTouchscreen } from "../../touch-controls";
+// import { hasTouchscreen } from "../../touch-controls";
 import { updateWindowType } from "../../ui/ui-theme";
 import { CandyUpgradeNotificationChangedEvent } from "../../events/battle-scene";
 import SettingsUiHandler from "#app/ui/settings/settings-ui-handler";
@@ -667,14 +667,14 @@ export function setSetting(scene: BattleScene, setting: string, value: integer):
     }
     break;
   case SettingKeys.Touch_Controls:
-    scene.enableTouchControls = Setting[index].options[value].value !== "Disabled" && hasTouchscreen();
+    scene.enableTouchControls = Setting[index].options[value].value !== "Disabled" ;
     const touchControls = document.getElementById("touchControls");
     if (touchControls) {
       touchControls.classList.toggle("visible", scene.enableTouchControls);
     }
     break;
   case SettingKeys.Vibration:
-    scene.enableVibration = Setting[index].options[value].value !== "Disabled" && hasTouchscreen();
+    scene.enableVibration = Setting[index].options[value].value !== "Disabled";
     break;
   case SettingKeys.Type_Hints:
     scene.typeHints = Setting[index].options[value].value === "On";
