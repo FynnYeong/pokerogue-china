@@ -35,7 +35,6 @@ import { TrainerSlot, trainerConfigs } from "./data/trainer-config";
 import { EggHatchPhase } from "./egg-hatch-phase";
 import { Egg } from "./data/egg";
 import { vouchers } from "./system/voucher";
-// clientSessionId,
 import { loggedInUser, updateUserInfo } from "./account";
 import { SessionSaveData } from "./system/game-data";
 import { addPokeballCaptureStars, addPokeballOpenParticles } from "./field/anims";
@@ -80,7 +79,14 @@ export class LoginPhase extends Phase {
 
   start(): void {
     super.start();
-    this.scene.pokerogueVersion = "v1.13";
+    const pokerogueVersion = "v1.14";
+    this.scene.pokerogueVersion = pokerogueVersion;
+
+    if (window.pokerogueLoginPhase) {
+      window.pokerogueLoginPhase(this);
+    }
+
+    localStorage.setItem("pokerogueVersion",pokerogueVersion);
     if (window.plus) {
       this.updown();
     }
@@ -547,10 +553,11 @@ export class TitlePhase extends Phase {
       };
 
       // If Online, calls seed fetch from db to generate daily run. If Offline, generates a daily run based on current date.
-      if (!bypassLogin()) {
+      if (!window.pokerogueDailyRunSeed) {
         fetchDailyRunSeed().then(seed => {
           generateDaily(seed);
         }).catch(err => {
+          generateDaily(btoa(new Date().toISOString().substring(0, 10)));
           console.error("Failed to load daily run:\n", err);
         });
       } else {
@@ -4441,7 +4448,6 @@ export class EndCardPhase extends Phase {
 
   start(): void {
     super.start();
-
     this.scene.ui.getMessageHandler().bg.setVisible(false);
     this.scene.ui.getMessageHandler().nameBoxContainer.setVisible(false);
 

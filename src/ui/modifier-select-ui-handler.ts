@@ -385,16 +385,16 @@ export default class ModifierSelectUiHandler extends AwaitableUiHandler {
       }
     } else if (cursor === 0) {
       this.cursorObj.setPosition(6, this.lockRarityButtonContainer.visible ? -72 : -60);
-      ui.showText("Spend money to reroll your item options.");
+      ui.showText("花钱重掷你的物品选项。");
     } else if (cursor === 1) {
       this.cursorObj.setPosition((this.scene.game.canvas.width / 6) - 120, -60);
-      ui.showText("Transfer a held item from one Pokémon to another.");
+      ui.showText("转移持有物到另一只宝可梦。");
     } else if (cursor === 2) {
       this.cursorObj.setPosition((this.scene.game.canvas.width / 6) - 60, -60);
-      ui.showText("Check your team or use a form changing item.");
+      ui.showText("查看你的队伍或使用形态变化道具。");
     } else {
       this.cursorObj.setPosition(6, -60);
-      ui.showText("Lock item rarities on reroll (affects reroll cost).");
+      ui.showText("在重掷时锁定物品稀有度（影响重掷的费用）");
     }
 
     return ret;

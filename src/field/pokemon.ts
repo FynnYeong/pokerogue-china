@@ -1328,9 +1328,9 @@ export default abstract class Pokemon extends Phaser.GameObjects.Container {
     // 闪光活动
     const info = this.scene?.pokerogueConfig?.active||{};
     if (thresholdOverride === undefined) {
-      // if (this.scene.eventManager.isEventActive()) {
-      //   shinyThreshold.value *= this.scene.eventManager.getShinyMultiplier();
-      // }
+      if (this.scene.eventManager?.isEventActive?.()) {
+        shinyThreshold.value *= this.scene.eventManager.getShinyMultiplier();
+      }
       if (info&&info?.type==="shiny") {
         shinyThreshold.value *= info?.shinyValue || 2;
       }
@@ -1339,7 +1339,6 @@ export default abstract class Pokemon extends Phaser.GameObjects.Container {
       }
     } else {
       shinyThreshold.value = thresholdOverride;
-
       if (info&&info?.type==="shiny") {
         shinyThreshold.value *=info?.shinyEggValue??info?.shinyValue??2;
       }

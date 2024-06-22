@@ -585,7 +585,7 @@ export class GameData {
       return true;
     }
 
-    const response = await Utils.apiFetch(`savedata/system/verify?clientSessionId=${clientSessionId}`, true)
+    const response = await Utils.apiPost("savedata/system/verify", JSON.stringify({ clientSessionId: clientSessionId }), undefined, true)
       .then(response => response.json());
 
     if (!response.valid) {
@@ -1003,7 +1003,7 @@ export class GameData {
         if (success !== null && !success) {
           return resolve(false);
         }
-        Utils.apiFetch(`savedata/session/delete?slot=${slotId}&clientSessionId=${clientSessionId}`, true).then(response => {
+        Utils.apiFetch(`savedata/delete?datatype=${GameDataType.SESSION}&slot=${slotId}&clientSessionId=${clientSessionId}`, true).then(response => {
           if (response.ok) {
             loggedInUser.lastSessionSlot = -1;
             localStorage.removeItem(`sessionData${this.scene.sessionSlotId ? this.scene.sessionSlotId : ""}_${loggedInUser.username}`);
@@ -1067,7 +1067,7 @@ export class GameData {
           return resolve([false, false]);
         }
         const sessionData = this.getSessionSaveData(scene);
-        Utils.apiPost(`savedata/session/clear?slot=${slotId}&trainerId=${this.trainerId}&secretId=${this.secretId}&clientSessionId=${clientSessionId}`, JSON.stringify(sessionData), undefined, true).then(response => {
+        Utils.apiPost(`savedata/clear?slot=${slotId}&trainerId=${this.trainerId}&secretId=${this.secretId}&clientSessionId=${clientSessionId}`, JSON.stringify(sessionData), undefined, true).then(response => {
           if (response.ok) {
             loggedInUser.lastSessionSlot = -1;
             localStorage.removeItem(`sessionData${this.scene.sessionSlotId ? this.scene.sessionSlotId : ""}_${loggedInUser.username}`);
@@ -1277,14 +1277,14 @@ export class GameData {
     });
   }
 
-  public importData(dataType: GameDataType, slotId: integer = 0): void {
+  public importData(dataType: GameDataType, slotId: integer = 0,path?:string): void {
     const dataKey = `${getDataTypeKey(dataType, slotId)}_${loggedInUser.username}`;
 
 
     const that = this;
     if (window.plus) {
       // window.plus.gallery.pick(function(path) {
-      window.plus.io.resolveLocalFileSystemURL("_downloads/1.prsv", function(entry) {
+      window.plus.io.resolveLocalFileSystemURL(path ?? "_downloads/1.prsv", function(entry) {
         entry.file(function(file) {
           const reader = new plus.io.FileReader();
           reader.onloadend = (e)=>{

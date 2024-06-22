@@ -94,7 +94,7 @@ export default class AbstractSettingsUiHandler extends UiHandler {
 
     this.settings
       .forEach((setting, s) => {
-        let settingName = setting.labelName;
+        let settingName = setting.label;
         if (setting?.requireReload) {
           settingName += ` (${i18next.t("settings:requireReload")})`;
         }
