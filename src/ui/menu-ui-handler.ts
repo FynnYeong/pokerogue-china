@@ -130,8 +130,9 @@ export default class MenuUiHandler extends MessageUiHandler {
         label: i18next.t("menuUiHandler:importSession"),
         handler: () => {
           const that = this;
-          window.plus.nativeUI.alert("导入须知：需要手动将要导入的文件命名为 1.prsv，并放置在对应目录下： Android/data/plus.H507852F9/downloads/1.prsv （可能存在系统自带文件管理器不支持访问Android/data的情况，可改用第三方文件管理器，如MT管理器）",function() {
-            confirmSlot(i18next.t("menuUiHandler:importSlotSelect"), () => true, slotId => that.scene.gameData.importData(GameDataType.SESSION, slotId));
+          confirmSlot(i18next.t("menuUiHandler:importSlotSelect"), () => true, slotId => that.scene.gameData.importData(GameDataType.SESSION, slotId));
+          window.plus.nativeUI.toast("导入须知：需要手动将要导入的文件命名为 1.prsv，并放置在对应目录下： Android/data/plus.H507852F9/downloads/1.prsv （可能存在系统自带文件管理器不支持访问Android/data的情况，可改用第三方文件管理器并确保拥有操作权限，推荐使用1.MT管理器 2.shizuku(用于授权访问目录的权限)）", {
+            duration: "long" // 提示持续时间（short短，long长）
           });
           return true;
         },
@@ -164,8 +165,9 @@ export default class MenuUiHandler extends MessageUiHandler {
         label: i18next.t("menuUiHandler:importData"),
         handler: () => {
           const that = this;
-          window.plus.nativeUI.alert("导入须知：需要手动将要导入的文件命名为 1.prsv，并放置在对应目录下： Android/data/plus.H507852F9/downloads/1.prsv （可能存在系统自带文件管理器不支持访问Android/data的情况，可改用第三方文件管理器并确保拥有操作权限，推荐使用1.MT管理器 2.shizuku(用于授权访问目录的权限)）",function() {
-            that.scene.gameData.importData(GameDataType.SYSTEM);
+          that.scene.gameData.importData(GameDataType.SYSTEM);
+          window.plus.nativeUI.toast("导入须知：需要手动将要导入的文件命名为 1.prsv，并放置在对应目录下： Android/data/plus.H507852F9/downloads/1.prsv （可能存在系统自带文件管理器不支持访问Android/data的情况，可改用第三方文件管理器并确保拥有操作权限，推荐使用1.MT管理器 2.shizuku(用于授权访问目录的权限)）", {
+            duration: "long" // 提示持续时间（short短，long长）
           });
           return true;
         },
@@ -173,13 +175,14 @@ export default class MenuUiHandler extends MessageUiHandler {
       });
     }
 
-    if (!window.pokerogueImportDataGuest) {
+    if (window.pokerogueImportDataGuest) {
       manageDataOptions.push({
         label: "导入离线模式数据",
         handler: () => {
           const that = this;
-          window.plus.nativeUI.alert("导入须知：1.在离线模式中选择 【导出数据】\n 2.在线模式中选择 【导入离线模式数据】\n 3. 导入完成",function() {
-            that.scene.gameData.importData(GameDataType.SYSTEM, 0 , "_downloads/data_Guest.prsv");
+          that.scene.gameData.importData(GameDataType.SYSTEM, 0 , "_downloads/data_Guest.prsv");
+          window.plus.nativeUI.toast("导入须知：1.在离线模式中选择 【导出数据】\n 2.在线模式中选择 【导入离线模式数据】\n 3. 导入完成", {
+            duration: "long" // 提示持续时间（short短，long长）
           });
           return true;
         },

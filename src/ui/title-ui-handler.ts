@@ -179,7 +179,9 @@ export default class TitleUiHandler extends OptionSelectUiHandler {
       }
 
       const arr =!!this.scene?.pokerogueConfig?.messages ? JSON.parse(localStorage.getItem("pokerouge_messages")||"[]")  : [];
-      this.splashMessage = Utils.randItem(getSplashMessages(arr));
+      const list = window?.pokerougeMessagesList ? window?.pokerougeMessagesList?.(arr,info) : arr;
+
+      this.splashMessage = Utils.randItem(getSplashMessages(list));
       this.splashMessageText.setText(
         this.splashMessage.replace("{COUNT}", "?")
       );
