@@ -141,12 +141,17 @@ export class Egg {
     //if (eggOptions.tier && eggOptions.species) throw Error("Error egg can't have species and tier as option. only choose one of them.")
 
     this._tier = eggOptions.tier ?? (Overrides.EGG_TIER_OVERRIDE ?? this.rollEggTier());
+    // If egg was pulled, check if egg pity needs to override the egg tier
     if (eggOptions.pulled) {
       this.checkForPityTierOverrides(eggOptions.scene);
-      this.increasePullStatistic(eggOptions.scene);
     }
 
     this._id = eggOptions.id ?? Utils.randInt(EGG_SEED, EGG_SEED * this._tier);
+
+    // Increase pull statistics AFTER the ID was generated beacuse it will be used to check for mahnaphy egg
+    if (eggOptions.pulled) {
+      this.increasePullStatistic(eggOptions.scene);
+    }
     this._sourceType = eggOptions.sourceType ?? undefined;
     this._hatchWaves = eggOptions.hatchWaves ?? this.getEggTierDefaultHatchWaves();
     this._timestamp = eggOptions.timestamp ?? new Date().getTime();
@@ -157,13 +162,20 @@ export class Egg {
     this._species = eggOptions.species ?? this.rollSpecies(eggOptions.scene);
 
     this._overrideHiddenAbility = eggOptions.overrideHiddenAbility ?? false;
-    this._eggMoveIndex = eggOptions.eggMoveIndex ?? this.rollEggMoveIndex();
 
     // Override egg tier and hatchwaves if species was given
     if (eggOptions.species) {
       this._tier = this.getEggTierFromSpeciesStarterValue();
       this._hatchWaves = eggOptions.hatchWaves ?? this.getEggTierDefaultHatchWaves();
+      // If species has no variant, set variantTier to common. This needs to
+      // be done because species with no variants get filtered at rollSpecies but since the
+      // species is set the check never happens
+      if (!getPokemonSpecies(this.species).hasVariants()) {
+        this._variantTier = VariantTier.COMMON;
+      }
     }
+    // Needs this._tier so it needs to be generated afer the tier override if bought from same species
+    this._eggMoveIndex = eggOptions.eggMoveIndex ?? this.rollEggMoveIndex();
     if (eggOptions.pulled) {
       this.addEggToGameData(eggOptions.scene);
     }
@@ -175,7 +187,7 @@ export class Egg {
 
   public isManaphyEgg(): boolean {
     return (this._species === Species.PHIONE || this._species === Species.MANAPHY) ||
-       this._tier === EggTier.COMMON && !(this._id % 204);
+       this._tier === EggTier.COMMON && !(this._id % 204) && !this._species;
   }
 
   public getKey(): string {
@@ -452,9 +464,10 @@ export class Egg {
   }
 
   private checkForPityTierOverrides(scene: BattleScene): void {
+    const tierValueOffset = this._sourceType === EggSourceType.GACHA_LEGENDARY ? 1 : 0;
     scene.gameData.eggPity[EggTier.GREAT] += 1;
     scene.gameData.eggPity[EggTier.ULTRA] += 1;
-    scene.gameData.eggPity[EggTier.MASTER] += 1 + this._sourceType === EggSourceType.GACHA_LEGENDARY ? 1 : 0;
+    scene.gameData.eggPity[EggTier.MASTER] += 1 + tierValueOffset;
     // These numbers are roughly the 80% mark. That is, 80% of the time you'll get an egg before this gets triggered.
     if (scene.gameData.eggPity[EggTier.MASTER] >= 412 && this._tier === EggTier.COMMON) {
       this._tier = EggTier.MASTER;
