@@ -4,7 +4,7 @@ import { getBiomeHasProps } from "./field/arena";
 import CacheBustedLoaderPlugin from "./plugins/cache-busted-loader-plugin";
 import { SceneBase } from "./scene-base";
 import { WindowVariant, getWindowVariantSuffix } from "./ui/ui-theme";
-import { isMobile } from "./touch-controls";
+// import { isMobile } from "./touch-controls";
 import * as Utils from "./utils";
 import { initI18n } from "./plugins/i18n";
 import {initPokemonPrevolutions} from "#app/data/pokemon-evolutions";
@@ -346,7 +346,7 @@ export class LoadingScene extends SceneBase {
   }
 
   loadLoadingScreen() {
-    const mobile = isMobile();
+    const mobile = true;
 
     const loadingGraphics: any[] = [];
 

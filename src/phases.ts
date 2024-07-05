@@ -79,7 +79,7 @@ export class LoginPhase extends Phase {
 
   start(): void {
     super.start();
-    const pokerogueVersion = "v1.14";
+    const pokerogueVersion = "v1.15";
     this.scene.pokerogueVersion = pokerogueVersion;
 
     if (window.pokerogueLoginPhase) {

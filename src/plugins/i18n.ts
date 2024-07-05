@@ -45,11 +45,11 @@ const fonts = [
   // unicode
   Object.assign(
     new FontFace("emerald", "url(./fonts/unifont-15.1.05.otf)", { unicodeRange: [unicodeCJK, unicodeHalfAndFullWidthForms].join(",") }),
-    { sizeAdjust: "80%", format: "opentype" }
+    { sizeAdjust: "75%", format: "opentype" }
   ),
   Object.assign(
     new FontFace("pkmnems", "url(./fonts/unifont-15.1.05.otf)", { unicodeRange: [unicodeCJK, unicodeHalfAndFullWidthForms].join(",") }),
-    { format: "opentype",sizeAdjust: "10%", }
+    { format: "opentype" }
   ),
 ];
 
