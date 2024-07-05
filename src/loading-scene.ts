@@ -440,15 +440,15 @@ export class LoadingScene extends SceneBase {
     intro.setOrigin(0, 0);
     intro.setScale(3);
 
-    this.load.once(this.LOAD_EVENTS.START, () => {
-      // videos do not need to be preloaded
-      intro.loadURL("images/intro_dark.mp4", true);
-      if (mobile) {
-        intro.video.setAttribute("webkit-playsinline", "webkit-playsinline");
-        intro.video.setAttribute("playsinline", "playsinline");
-      }
-      intro.play();
-    });
+    // this.load.once(this.LOAD_EVENTS.START, () => {
+    //   // videos do not need to be preloaded
+    //   intro.loadURL("images/intro_dark.mp4", true);
+    //   if (mobile) {
+    //     intro.video.setAttribute("webkit-playsinline", "webkit-playsinline");
+    //     intro.video.setAttribute("playsinline", "playsinline");
+    //   }
+    //   intro.play();
+    // });
 
     this.load.on(this.LOAD_EVENTS.PROGRESS , (progress: number) => {
       percentText.setText(`${Math.floor(progress * 100)}%`);
