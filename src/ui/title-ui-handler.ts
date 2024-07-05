@@ -9,17 +9,16 @@ import {
   getSplashMessages,
 } from "../data/splash-messages";
 import i18next from "i18next";
+import { TimedEventDisplay } from "#app/timed-event-manager.js";
 
 export default class TitleUiHandler extends OptionSelectUiHandler {
   private titleContainer: Phaser.GameObjects.Container;
-  private dailyRunScoreboard: DailyRunScoreboard;
   private playerCountLabel: Phaser.GameObjects.Text;
   private splashMessage: string;
   private splashMessageText: Phaser.GameObjects.Text;
-  private eventTimerText: Phaser.GameObjects.Text;
+  private eventDisplay: TimedEventDisplay;
 
   private titleStatsTimer: NodeJS.Timeout;
-  private eventTimer: NodeJS.Timeout;
 
   constructor(scene: BattleScene, mode: Mode = Mode.TITLE) {
     super(scene, mode);
@@ -31,7 +30,7 @@ export default class TitleUiHandler extends OptionSelectUiHandler {
     const ui = this.getUi();
 
     this.titleContainer = this.scene.add.container(0, -(this.scene.game.canvas.height / 6));
-    this.titleContainer.setName("container-title");
+    this.titleContainer.setName("title");
     this.titleContainer.setAlpha(0);
     ui.add(this.titleContainer);
 
@@ -74,6 +73,11 @@ export default class TitleUiHandler extends OptionSelectUiHandler {
     //   this.eventTimerText.setName("text-event-timer");
     //   this.eventTimerText.setScale(0.15);
     //   this.eventTimerText.setOrigin(0,0);
+    // if (this.scene.eventManager.isEventActive()) {
+    //   this.eventDisplay = new TimedEventDisplay(this.scene, 0, 0, this.scene.eventManager.activeEvent());
+    //   this.eventDisplay.setup();
+    //   this.titleContainer.add(this.eventDisplay);
+    // }
 
     //   this.titleContainer.add(bannerShadow);
     //   this.titleContainer.add(banner);
@@ -112,33 +116,6 @@ export default class TitleUiHandler extends OptionSelectUiHandler {
       loop: -1,
       yoyo: true,
     });
-  }
-
-  timeToGo(date: Date) {
-
-    // Utility to add leading zero
-    function z(n) {
-      return (n < 10? "0" : "") + n;
-    }
-    const now = new Date();
-    let diff = Math.abs(date.getTime() - now.getTime());
-
-    // Allow for previous times
-    diff = Math.abs(diff);
-
-    // Get time components
-    const days = diff/8.64e7 | 0;
-    const hours = diff%8.64e7 / 3.6e6 | 0;
-    const mins  = diff%3.6e6 / 6e4 | 0;
-    const secs  = Math.round(diff%6e4 / 1e3);
-
-    // Return formatted string
-    return "Event Ends in : " + z(days) + "d " + z(hours) + "h " + z(mins) + "m " + z(secs)+ "s";
-  }
-
-  updateCountdown() {
-    const event = this.scene.eventManager.activeEvent();
-    this.eventTimerText.setText(this.timeToGo(event.endDate));
   }
 
   updateTitleStats(): void {
@@ -197,6 +174,9 @@ export default class TitleUiHandler extends OptionSelectUiHandler {
       //     this.updateCountdown();
       //   }, 1000);
       // }
+      // if (this.scene.eventManager.isEventActive()) {
+      //   this.eventDisplay.show();
+      // }
 
       this.updateTitleStats();
 
@@ -220,8 +200,7 @@ export default class TitleUiHandler extends OptionSelectUiHandler {
 
     const ui = this.getUi();
 
-    clearInterval(this.eventTimer);
-    this.eventTimer = null;
+    this.eventDisplay?.clear();
 
     clearInterval(this.titleStatsTimer);
     this.titleStatsTimer = null;

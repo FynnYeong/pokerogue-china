@@ -1,4 +1,5 @@
 import * as Utils from "../utils";
+import i18next, { ParseKeys } from "i18next";
 
 export enum StatusEffect {
   NONE,
@@ -31,94 +32,52 @@ export class Status {
   }
 }
 
-export function getStatusEffectObtainText(statusEffect: StatusEffect, sourceText?: string): string {
-  const sourceClause = sourceText ? ` ${statusEffect !== StatusEffect.SLEEP ? "由" : "从"} ${sourceText}` : "";
+function getStatusEffectMessageKey(statusEffect: StatusEffect): string {
   switch (statusEffect) {
-    case StatusEffect.POISON:
-      return `\n中了毒${sourceClause}！`;
-    case StatusEffect.TOXIC:
-      return `\n中了剧毒${sourceClause}！`;
-    case StatusEffect.PARALYSIS:
-      return ` 麻痹了${sourceClause}！\n可能无法行动！`;
-    case StatusEffect.SLEEP:
-      return `\n睡着了${sourceClause}！`;
-    case StatusEffect.FREEZE:
-      return `\n被冻住了${sourceClause}！`;
-    case StatusEffect.BURN:
-      return `\n被烧伤了${sourceClause}！`;
+  case StatusEffect.POISON:
+    return "statusEffect:poison";
+  case StatusEffect.TOXIC:
+    return "statusEffect:toxic";
+  case StatusEffect.PARALYSIS:
+    return "statusEffect:paralysis";
+  case StatusEffect.SLEEP:
+    return "statusEffect:sleep";
+  case StatusEffect.FREEZE:
+    return "statusEffect:freeze";
+  case StatusEffect.BURN:
+    return "statusEffect:burn";
+  default:
+    return "statusEffect:none";
   }
-
-  return "";
 }
 
-export function getStatusEffectActivationText(statusEffect: StatusEffect): string {
-  switch (statusEffect) {
-    case StatusEffect.POISON:
-    case StatusEffect.TOXIC:
-      return " 中毒了\n正在受伤！";
-    case StatusEffect.PARALYSIS:
-      return " 麻痹了！\n无法行动！";
-    case StatusEffect.SLEEP:
-      return " 正在熟睡。";
-    case StatusEffect.FREEZE:
-      return " 被\n冻住了！";
-    case StatusEffect.BURN:
-      return " 正在被\n烧伤！";
+export function getStatusEffectObtainText(statusEffect: StatusEffect, pokemonNameWithAffix: string, sourceText?: string): string {
+  if (!sourceText) {
+    const i18nKey = `${getStatusEffectMessageKey(statusEffect)}.obtain`as ParseKeys;
+    return i18next.t(i18nKey, { pokemonNameWithAffix: pokemonNameWithAffix });
   }
-
-  return "";
+  const i18nKey = `${getStatusEffectMessageKey(statusEffect)}.obtainSource`as ParseKeys;
+  return i18next.t(i18nKey, { pokemonNameWithAffix: pokemonNameWithAffix, sourceText: sourceText });
 }
 
-export function getStatusEffectOverlapText(statusEffect: StatusEffect): string {
-  switch (statusEffect) {
-    case StatusEffect.POISON:
-    case StatusEffect.TOXIC:
-      return " 已经\n中毒了！";
-    case StatusEffect.PARALYSIS:
-      return " 已经\n麻痹了！";
-    case StatusEffect.SLEEP:
-      return " 已经\n睡着了！";
-    case StatusEffect.FREEZE:
-      return " 已经\n冻住了！";
-    case StatusEffect.BURN:
-      return " 已经\n烧伤了！";
-  }
-
-  return "";
+export function getStatusEffectActivationText(statusEffect: StatusEffect, pokemonNameWithAffix: string): string {
+  const i18nKey = `${getStatusEffectMessageKey(statusEffect)}.activation` as ParseKeys;
+  return i18next.t(i18nKey, { pokemonNameWithAffix: pokemonNameWithAffix });
 }
 
-export function getStatusEffectHealText(statusEffect: StatusEffect): string {
-  switch (statusEffect) {
-    case StatusEffect.POISON:
-    case StatusEffect.TOXIC:
-      return " 的\n毒已经治愈了！";
-    case StatusEffect.PARALYSIS:
-      return " 的\n麻痹已经治愈了！";
-    case StatusEffect.SLEEP:
-      return " 醒来了！";
-    case StatusEffect.FREEZE:
-      return " 已经\n解冻了！";
-    case StatusEffect.BURN:
-      return " 的\n烧伤已经治愈了！";
-  }
+export function getStatusEffectOverlapText(statusEffect: StatusEffect, pokemonNameWithAffix: string): string {
+  const i18nKey = `${getStatusEffectMessageKey(statusEffect)}.overlap` as ParseKeys;
+  return i18next.t(i18nKey, { pokemonNameWithAffix: pokemonNameWithAffix });
+}
 
-  return "";
+export function getStatusEffectHealText(statusEffect: StatusEffect, pokemonNameWithAffix: string): string {
+  const i18nKey = `${getStatusEffectMessageKey(statusEffect)}.heal` as ParseKeys;
+  return i18next.t(i18nKey, { pokemonNameWithAffix: pokemonNameWithAffix });
 }
 
 export function getStatusEffectDescriptor(statusEffect: StatusEffect): string {
-  switch (statusEffect) {
-    case StatusEffect.POISON:
-    case StatusEffect.TOXIC:
-      return "中毒";
-    case StatusEffect.PARALYSIS:
-      return "麻痹";
-    case StatusEffect.SLEEP:
-      return "睡眠";
-    case StatusEffect.FREEZE:
-      return "冻结";
-    case StatusEffect.BURN:
-      return "烧伤";
-  }
+  const i18nKey = `${getStatusEffectMessageKey(statusEffect)}.description` as ParseKeys;
+  return i18next.t(i18nKey);
 }
 
 
