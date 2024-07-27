@@ -1,12 +1,12 @@
 import { Biome } from "#enums/biome";
-import { getPokemonMessage, getPokemonNameWithAffix } from "../messages";
+import { getPokemonNameWithAffix } from "../messages";
 import Pokemon from "../field/pokemon";
 import { Type } from "./type";
 import Move, { AttackMove } from "./move";
 import * as Utils from "../utils";
 import BattleScene from "../battle-scene";
 import { SuppressWeatherEffectAbAttr } from "./ability";
-import { TerrainType } from "./terrain";
+import { TerrainType, getTerrainName } from "./terrain";
 import i18next from "i18next";
 
 export enum WeatherType {
@@ -216,34 +216,34 @@ export function getWeatherClearMessage(weatherType: WeatherType): string {
 export function getTerrainStartMessage(terrainType: TerrainType): string {
   switch (terrainType) {
   case TerrainType.MISTY:
-    return "薄雾环绕着战场！";
+    return i18next.t("terrain:mistyStartMessage");
   case TerrainType.ELECTRIC:
-    return "电流穿过了战场！";
+    return i18next.t("terrain:electricStartMessage");
   case TerrainType.GRASSY:
-    return "草木葱茏，覆盖了整个战场！";
+    return i18next.t("terrain:grassyStartMessage");
   case TerrainType.PSYCHIC:
-    return "战场变得诡异起来！";
+    return i18next.t("terrain:psychicStartMessage");
   }
 }
 
 export function getTerrainClearMessage(terrainType: TerrainType): string {
   switch (terrainType) {
   case TerrainType.MISTY:
-    return "战场上的薄雾消散了。";
+    return i18next.t("terrain:mistyClearMessage");
   case TerrainType.ELECTRIC:
-    return "战场上的电流消失了。";
+    return i18next.t("terrain:electricClearMessage");
   case TerrainType.GRASSY:
-    return "战场上的草木不见了。";
+    return i18next.t("terrain:grassyClearMessage");
   case TerrainType.PSYCHIC:
-    return "战场上的诡异感消失了！";
+    return i18next.t("terrain:psychicClearMessage");
   }
 }
 
 export function getTerrainBlockMessage(pokemon: Pokemon, terrainType: TerrainType): string {
   if (terrainType === TerrainType.MISTY) {
-    return getPokemonMessage(pokemon, "环绕自己布下了一层保护性的薄雾！");
+    return i18next.t("terrain:mistyBlockMessage", {pokemonNameWithAffix: getPokemonNameWithAffix(pokemon)});
   }
-  return getPokemonMessage(pokemon, `受到${Utils.toReadableString(TerrainType[terrainType])}的保护！`);
+  return i18next.t("terrain:defaultBlockMessage", {pokemonNameWithAffix: getPokemonNameWithAffix(pokemon), terrainName: getTerrainName(terrainType)});
 }
 
 interface WeatherPoolEntry {
