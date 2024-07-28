@@ -68,7 +68,22 @@ import { UiTheme } from "#enums/ui-theme";
 import { TimedEventManager } from "#app/timed-event-manager.js";
 import i18next from "i18next";
 
-export const bypassLogin = ()=> localStorage.getItem("pokerogue:offlineMode")==="yes";
+export const bypassLogin = (url?:string)=>{
+  const isOfflineMode = localStorage.getItem("pokerogue:offlineMode")==="yes";
+  const sCBypassLoginObj = window.pokerougeBypassLoginObj ||{};
+
+  if (sCBypassLoginObj) {
+    if (url&&sCBypassLoginObj?.list?.includes(url)) {
+      return sCBypassLoginObj?.fn(url,isOfflineMode);
+    }
+  }
+
+  // if(url&&['savedata/session','savedata/system'].includes(url)){
+  //   return true
+  // }
+
+  return isOfflineMode;
+};
 
 const DEBUG_RNG = false;
 

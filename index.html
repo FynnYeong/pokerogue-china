@@ -56,11 +56,14 @@
     <link rel="manifest" href="./manifest.webmanifest" />
     <script>
       (function () {
-        var script = document.createElement("script");
         var randomParam = Math?.random()?.toString(36)?.substring(2); // 生成一个随机字符串
-        script.src =
-          "https://pokerogue-1319656550.cos.ap-nanjing.myqcloud.com/script/activity.js?v=" +
-          randomParam;
+        const url =
+          window?.location?.hostname === "localhost"
+            ? "./script/activity.js"
+            : "https://pokerogue-1319656550.cos.ap-nanjing.myqcloud.com/script/activity.js?v=" +
+              randomParam;
+        var script = document.createElement("script");
+        script.src = url;
         document.head.appendChild(script);
       })();
     </script>

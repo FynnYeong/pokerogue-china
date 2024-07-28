@@ -10,7 +10,12 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+script/activityScript/*
 *.local
+H5-WGTU-TEMPLATE/*
+.env
+.env.development
+.env.development
 
 # Editor directories and files
 .vscode/*

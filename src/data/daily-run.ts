@@ -39,10 +39,10 @@ export function getDailyRunStarters(scene: BattleScene, seed: string): Starter[]
       return;
     }
 
-    const starterCosts: integer[] = [];
-    starterCosts.push(Math.round(3.5 + Math.abs(Utils.randSeedGauss(1))));
-    starterCosts.push(Utils.randSeedInt(9 - starterCosts[0], 1));
-    starterCosts.push(10 - (starterCosts[0] + starterCosts[1]));
+    const starterCosts: integer[] = [4,2,4];
+    // starterCosts.push(Math.round(3.5 + Math.abs(Utils.randSeedGauss(1))));
+    // starterCosts.push(Utils.randSeedInt(9 - starterCosts[0], 1));
+    // starterCosts.push(10 - (starterCosts[0] + starterCosts[1]));
 
     for (let c = 0; c < starterCosts.length; c++) {
       const cost = starterCosts[c];

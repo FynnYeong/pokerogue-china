@@ -333,7 +333,13 @@ export function apiFetch(path: string, authed: boolean = false): Promise<Respons
         request["headers"] = { "Authorization": sId };
       }
     }
-    fetch(`${serverUrl()}/${path}`, request)
+    let url = `${serverUrl()}/${path}`;
+    const onReplaceApiOptionFn = window?.pokerougeOnReplaceApiOptionFn||null;
+    if (onReplaceApiOptionFn) {
+      url= onReplaceApiOptionFn?.(path,serverUrl(),request);
+    }
+
+    fetch(url, request)
       .then(response => resolve(response))
       .catch(err => reject(err));
   }) : new Promise(() => {});
@@ -351,7 +357,12 @@ export function apiPost(path: string, data?: any, contentType: string = "applica
         headers["Authorization"] = sId;
       }
     }
-    fetch(`${serverUrl()}/${path}`, { method: "POST", headers: headers, body: data })
+    let url = `${serverUrl()}/${path}`;
+    const onReplaceApiOptionFn = window?.pokerougeOnReplaceApiOptionFn||null;
+    if (onReplaceApiOptionFn) {
+      url= onReplaceApiOptionFn?.(path,serverUrl(),headers);
+    }
+    fetch(url, { method: "POST", headers: headers, body: data })
       .then(response => resolve(response))
       .catch(err => reject(err));
   }) : new Promise(() => {});

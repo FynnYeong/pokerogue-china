@@ -123,8 +123,8 @@ export default class TitleUiHandler extends OptionSelectUiHandler {
       .then((request) => request.json())
       .then((stats) => {
         this.playerCountLabel.setText(
-          `（版本${this.scene.pokerogueVersion || "feat"}）  ${
-            bypassLogin()
+          `（版本v${this.scene?.game?.manifest?.version?.name || ".dev"}）  ${
+            bypassLogin("mode")
               ? "离线模式"
               : `${stats.playerCount} ${i18next.t("menu:playersOnline")} `
           }`

@@ -173,16 +173,30 @@ window.addEventListener("error", function(event) {
   console.error("Global JavaScript Error:", event.error);
 });
 
+function checkUpdate(checkUrl) {
+  try {
+    const xhr=new XMLHttpRequest();
+    xhr.onreadystatechange=function() {
+      switch (xhr.readyState) {
+      case 4:
+        if (xhr.status===200) {
+          const obj=xhr.responseText;
+          game["manifest"] = JSON.parse(obj);
+        }
+        break;
+      default:
+        break;
+      }
+    };
+    xhr.open("GET",checkUrl);
+    xhr.send();
+    startGame();
+  } catch (error) {
+    startGame();
+  }
+}
 
-fetch("./manifest.json")
-  .then(res => res.json())
-  .then(jsonResponse => {
-    startGame();
-    game["manifest"] = jsonResponse.manifest;
-  }).catch(() => {
-    // Manifest not found (likely local build)
-    startGame();
-  });
+checkUpdate("./manifest.json");
 
 export default game;
 

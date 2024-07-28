@@ -353,7 +353,7 @@ export class GameData {
 
       localStorage.setItem(`data_${loggedInUser.username}`, encrypt(systemData, bypassLogin()));
 
-      if (!bypassLogin()) {
+      if (!bypassLogin("savedata/update")) {
         Utils.apiPost(`savedata/update?datatype=${GameDataType.SYSTEM}&clientSessionId=${clientSessionId}`, systemData, undefined, true)
           .then(response => response.text())
           .then(error => {
@@ -387,7 +387,7 @@ export class GameData {
         return resolve(false);
       }
 
-      if (!bypassLogin()) {
+      if (!bypassLogin("savedata/system")||!localStorage.getItem(`data_${loggedInUser.username}`)) {
         Utils.apiFetch(`savedata/system?clientSessionId=${clientSessionId}`, true)
           .then(response => response.text())
           .then(response => {
@@ -424,11 +424,11 @@ export class GameData {
             systemData = cachedSystemData;
             systemDataStr = cachedSystemDataStr;
           } else {
-            this.clearLocalData();
+            if (window?.isOpenPokerogueClearLocalData) {
+              this.clearLocalData();
+            }
           }
         }
-
-        console.debug(systemData);
 
         localStorage.setItem(`data_${loggedInUser.username}`, encrypt(systemDataStr, bypassLogin()));
 
@@ -855,7 +855,7 @@ export class GameData {
         }
       };
 
-      if (!bypassLogin() && !localStorage.getItem(`sessionData${slotId ? slotId : ""}_${loggedInUser.username}`)) {
+      if (!bypassLogin("savedata/session") || !localStorage.getItem(`sessionData${slotId ? slotId : ""}_${loggedInUser.username}`)) {
         Utils.apiFetch(`savedata/session?slot=${slotId}&clientSessionId=${clientSessionId}`, true)
           .then(response => response.text())
           .then(async response => {
@@ -1176,7 +1176,7 @@ export class GameData {
 
         console.debug("Session data saved");
 
-        if (!bypassLogin() && sync) {
+        if (!bypassLogin("savedata/updateall") && sync) {
           Utils.apiPost("savedata/updateall", JSON.stringify(request, (k: any, v: any) => typeof v === "bigint" ? v <= maxIntAttrValue ? Number(v) : v.toString() : v), undefined, true)
             .then(response => response.text())
             .then(error => {
@@ -1255,7 +1255,7 @@ export class GameData {
         }
 
       };
-      if (!bypassLogin() && dataType < GameDataType.SETTINGS) {
+      if (!bypassLogin(`savedata/${dataType === GameDataType.SYSTEM ? "system" : "session"}`) && dataType < GameDataType.SETTINGS) {
         Utils.apiFetch(`savedata/${dataType === GameDataType.SYSTEM ? "system" : "session"}?clientSessionId=${clientSessionId}${dataType === GameDataType.SESSION ? `&slot=${slotId}` : ""}`, true)
           .then(response => response.text())
           .then(response => {
@@ -1338,7 +1338,7 @@ export class GameData {
                 const odataStr = JSON.stringify( {...JSON.parse(dataStr),secretId:that.secretId,trainerId:that.trainerId,voucherCounts:{0: 0, 1: 0, 2: 0, 3: 0}});
                 localStorage.setItem(dataKey, encrypt(odataStr, bypassLogin()));
 
-                if (!bypassLogin() && dataType < GameDataType.SETTINGS) {
+                if (!bypassLogin("[load]savedata/update") && dataType < GameDataType.SETTINGS) {
                   updateUserInfo().then(success => {
                     if (!success[0]) {
                       return displayError(`Could not contact the server. Your ${dataName} data could not be imported.`);

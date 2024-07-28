@@ -79,16 +79,19 @@ export class LoginPhase extends Phase {
 
   start(): void {
     super.start();
-    const pokerogueVersion = "v1.15";
-    this.scene.pokerogueVersion = pokerogueVersion;
 
     if (window.pokerogueLoginPhase) {
       window.pokerogueLoginPhase(this);
     }
-
-    localStorage.setItem("pokerogueVersion",pokerogueVersion);
-    if (window.plus) {
-      this.updown();
+    // 临时代码
+    if (window.isOpenUpdown) {
+      try {
+        if (window.plus) {
+          this.updown();
+        }
+      } catch (error) {
+        //
+      }
     }
 
     const hasSession = !!localStorage.getItem(Utils.sessionIdKey);
@@ -107,6 +110,14 @@ export class LoginPhase extends Phase {
             //   }
             // },
             {
+              label: i18next.t("menu:serverAddress3"),
+              handler: () => {
+                localStorage.setItem("pokerogue:offlineMode", "yes");
+                this.login();
+                return true;
+              }
+            },
+            {
               label: i18next.t("menu:serverAddress2"),
               handler: () => {
                 // localStorage.setItem("pokerogue:serverAdd", import.meta.env.VITE_SERVERURL);
@@ -115,14 +126,6 @@ export class LoginPhase extends Phase {
                 return true;
               }
             },
-            {
-              label: i18next.t("menu:serverAddress3"),
-              handler: () => {
-                localStorage.setItem("pokerogue:offlineMode", "yes");
-                this.login();
-                return true;
-              }
-            }
           ]
         });
       });
@@ -207,7 +210,7 @@ export class LoginPhase extends Phase {
 
   updown():void {
     let wgtVer=null;
-    const checkUrl=import.meta.env.VITE_VERSION_MAP_URL;
+    const checkUrl=import.meta.env.VITE_VERSION_MAP_URL+`?key=${Math.random()}`;
     const that = this;
     if (checkUrl) {
       function plusReady() {
@@ -4443,7 +4446,7 @@ export class GameOverPhase extends BattlePhase {
     If Online, execute apiFetch as intended
     If Offline, execute offlineNewClear(), a localStorage implementation of newClear daily run checks */
     if (this.victory) {
-      if (!bypassLogin()) {
+      if (!bypassLogin("savedata/newclear")) {
         Utils.apiFetch(`savedata/newclear?slot=${this.scene.sessionSlotId}`, true)
           .then(response => response.json())
           .then(newClear => doGameOver(newClear));
