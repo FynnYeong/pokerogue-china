@@ -110,18 +110,18 @@ export class LoginPhase extends Phase {
             //   }
             // },
             {
-              label: i18next.t("menu:serverAddress3"),
+              label: i18next.t("menu:serverAddress2"),
               handler: () => {
-                localStorage.setItem("pokerogue:offlineMode", "yes");
+                // localStorage.setItem("pokerogue:serverAdd", import.meta.env.VITE_SERVERURL);
+                localStorage.removeItem("pokerogue:offlineMode");
                 this.login();
                 return true;
               }
             },
             {
-              label: i18next.t("menu:serverAddress2"),
+              label: i18next.t("menu:serverAddress3"),
               handler: () => {
-                // localStorage.setItem("pokerogue:serverAdd", import.meta.env.VITE_SERVERURL);
-                localStorage.removeItem("pokerogue:offlineMode");
+                localStorage.setItem("pokerogue:offlineMode", "yes");
                 this.login();
                 return true;
               }
@@ -2124,7 +2124,7 @@ export class CommandPhase extends FieldPhase {
 
     const moveQueue = playerPokemon.getMoveQueue();
 
-    while (moveQueue.length && moveQueue[0]
+    while (moveQueue?.length && moveQueue?.[0]
       && moveQueue[0].move && (!playerPokemon.getMoveset().find(m => m.moveId === moveQueue[0].move)
         || !playerPokemon.getMoveset()[playerPokemon.getMoveset().findIndex(m => m.moveId === moveQueue[0].move)].isUsable(playerPokemon, moveQueue[0].ignorePP))) {
       moveQueue.shift();

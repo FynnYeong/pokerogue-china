@@ -104,7 +104,7 @@ export default class LoginFormUiHandler extends FormModalUiHandler {
   show(args: any[]): boolean {
     if (super.show(args)) {
 
-      this.processExternalProvider();
+      // this.processExternalProvider();
 
       const config = args[0] as ModalConfig;
       const originalLoginAction = this.submitAction;

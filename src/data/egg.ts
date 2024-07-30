@@ -156,7 +156,7 @@ export class Egg {
     this._timestamp = eggOptions.timestamp ?? new Date().getTime();
 
     // First roll shiny and variant so we can filter if species with an variant exist
-    this._isShiny = eggOptions.isShiny ?? (Overrides.EGG_SHINY_OVERRIDE || this.rollShiny());
+    this._isShiny = eggOptions.isShiny ?? (Overrides.EGG_SHINY_OVERRIDE || this.rollShiny(eggOptions.scene));
     this._variantTier = eggOptions.variantTier ?? (Overrides.EGG_VARIANT_OVERRIDE ?? this.rollVariant());
     this._species = eggOptions.species ?? this.rollSpecies(eggOptions.scene);
 
@@ -201,7 +201,7 @@ export class Egg {
   public generatePlayerPokemon(scene: BattleScene): PlayerPokemon {
     // Legacy egg wants to hatch. Generate missing properties
     if (!this._species) {
-      this._isShiny = this.rollShiny();
+      this._isShiny = this.rollShiny(scene);
       this._species = this.rollSpecies(scene);
     }
 
@@ -430,7 +430,7 @@ export class Egg {
   * Rolls whether the egg is shiny or not.
   * @returns True if the egg is shiny
   **/
-  private rollShiny(): boolean {
+  private rollShiny(scene?:BattleScene): boolean {
     let shinyChance = DEFAULT_SHINY_RATE;
     switch (this._sourceType) {
     case EggSourceType.GACHA_SHINY:
@@ -443,6 +443,10 @@ export class Egg {
       break;
     }
 
+    const info = scene?.pokerogueConfig?.active||{};
+    if (info&&info?.type==="shiny") {
+      shinyChance *=info?.shinyEggValue??info?.shinyValue??2;
+    }
     return !Utils.randSeedInt(shinyChance);
   }
 

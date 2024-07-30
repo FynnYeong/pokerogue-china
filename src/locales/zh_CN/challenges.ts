@@ -22,4 +22,10 @@ export const challenges: TranslationEntries = {
     "desc": "你只能使用{{type}}\n属性的宝可梦",
     "desc_default": "你只能使用所选\n属性的宝可梦"
   },
+  "freshStart": {
+    "name": "全新开始",
+    "desc": "您只能使用原始的启动器，并且只能像刚开始玩 Pokerogue 时那样使用。",
+    "value.0": "关闭",
+    "value.1": "开启"
+  }
 } as const;
