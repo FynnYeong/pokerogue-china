@@ -1,38 +1,45 @@
-import { defineConfig, loadEnv } from 'vite';
-import tsconfigPaths from 'vite-tsconfig-paths';
+import { defineConfig, loadEnv, Rollup, UserConfig } from "vite";
+import tsconfigPaths from "vite-tsconfig-paths";
+import { minifyJsonPlugin } from "./src/plugins/vite/vite-minify-json-plugin";
 
 export const defaultConfig = {
-	plugins: [tsconfigPaths() as any],
-	server: { host: '0.0.0.0', port: 8000 },
-	base:'./',
-	clearScreen: false,
-	build: {
-		minify: 'esbuild' as const,
-		sourcemap: false,
-	},
-	rollupOptions: {
-		onwarn(warning, warn) {
-			// Suppress "Module level directives cause errors when bundled" warnings
-			if (warning.code === "MODULE_LEVEL_DIRECTIVE") {
-				return;
-			}
-			warn(warning);
-		},
-	}
+  plugins: [
+    tsconfigPaths() as any,
+    minifyJsonPlugin(["images", "battle-anims"], true),
+  ],
+  server: { host: "0.0.0.0", port: 8000 },
+  base: "./",
+  clearScreen: false,
+  appType: "mpa",
+  build: {
+    minify: "esbuild",
+    sourcemap: false,
+    rollupOptions: {
+      onwarn(
+        warning: Rollup.RollupLog,
+        defaultHandler: (warning: string | Rollup.RollupLog) => void
+      ) {
+        // Suppress "Module level directives cause errors when bundled" warnings
+        if (warning.code === "MODULE_LEVEL_DIRECTIVE") {
+          return;
+        }
+        defaultHandler(warning);
+      },
+    },
+  },
 };
 
+export default defineConfig(({ mode }) => {
+  const envPort = Number(loadEnv(mode, process.cwd()).VITE_PORT);
 
-export default defineConfig(({mode}) => {
-	const envPort = Number(loadEnv(mode, process.cwd()).VITE_PORT);
-
-	return ({
-		...defaultConfig,
-		esbuild: {
-			pure: mode === 'production' ? ['console.log'] : [],
-			keepNames: true,
-		},
-		server: {
-			port: !isNaN(envPort) ? envPort : 8000,
-		}
-	});
+  return {
+    ...defaultConfig,
+    esbuild: {
+      pure: mode === "production" ? ["console.log"] : [],
+      keepNames: true,
+    },
+    server: {
+      port: !isNaN(envPort) ? envPort : 8000,
+    },
+  };
 });

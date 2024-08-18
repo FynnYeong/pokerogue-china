@@ -23,9 +23,9 @@ export const challenges: TranslationEntries = {
     "desc_default": "你只能使用所选\n属性的宝可梦"
   },
   "freshStart": {
-    "name": "全新开始",
-    "desc": "您只能使用原始的启动器，并且只能像刚开始玩 Pokerogue 时那样使用。",
+    "name": "初次尝试",
+    "desc": "你只能使用御三家，就像是你第一次玩宝可梦肉鸽一样。",
     "value.0": "关闭",
-    "value.1": "开启"
-  }
+    "value.1": "开启",
+  },
 } as const;
