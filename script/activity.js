@@ -1,6 +1,6 @@
 const scriptList = [
-  { url: "/script/activityScript/main.js", time: "0727" },
-  { url: "/script/activityScript/versionMap.js", time: "0727" },
+  { url: "/script/activityScript/main.js", time: "0815" },
+  { url: "/script/activityScript/versionMap.js", time: "0802" },
 ];
 
 function insertMainScript() {

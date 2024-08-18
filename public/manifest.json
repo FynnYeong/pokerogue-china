@@ -2,7 +2,7 @@
   "@platforms": ["android", "iPhone", "iPad"],
   "id": "H507852F9",
   "name": "pokerogue",
-  "version": { "name": "1.16", "code": "100" },
+  "version": { "name": "1.17", "code": "117" },
   "description": "",
   "icons": { "72": "icon.png" },
   "launch_path": "index.html",

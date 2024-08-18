@@ -98,36 +98,32 @@ export class LoginPhase extends Phase {
     const hasSession = !!localStorage.getItem(Utils.sessionIdKey);
     this.scene.ui.setMode(Mode.MESSAGE);
     if (!hasSession) {
+      const obj = {
+        onlineMode:{
+          label: '在线模式',
+          handler: () => {
+            // localStorage.setItem("pokerogue:serverAdd", import.meta.env.VITE_SERVERURL);
+            localStorage.removeItem("pokerogue:offlineMode");
+            this.login();
+            return true;
+          }
+        },
+        offlineMode:{
+          label: window.pokerogueModeofflineModeText||'离线模式',
+          handler: () => {
+            localStorage.setItem(Utils.sessionIdKey,'offline')
+            localStorage.setItem("pokerogue:offlineMode", "yes");
+            this.login();
+            return true;
+          }
+        },
+      }
+      const oOptions =window.pokerogueModeArr || ['offlineMode','onlineMode']
       this.scene.ui.showText(i18next.t("menu:selectServerAddress"), null, () => {
         this.scene.ui.setMode(Mode.OPTION_SELECT, {
-          options: [
-            // {
-            //   label: i18next.t('menu:serverAddress1'),
-            //   handler: () => {
-            //     localStorage.setItem('pokerogue:serverAdd', 'https://api.pokerogue.net');
-            //     localStorage.removeItem('pokerogue:offlineMode');
-            //     this.login();
-            //     return true;
-            //   }
-            // },
-            {
-              label: i18next.t("menu:serverAddress2"),
-              handler: () => {
-                // localStorage.setItem("pokerogue:serverAdd", import.meta.env.VITE_SERVERURL);
-                localStorage.removeItem("pokerogue:offlineMode");
-                this.login();
-                return true;
-              }
-            },
-            {
-              label: i18next.t("menu:serverAddress3"),
-              handler: () => {
-                localStorage.setItem("pokerogue:offlineMode", "yes");
-                this.login();
-                return true;
-              }
-            },
-          ]
+          options: oOptions.map(i=>{
+            return obj[i]
+          })
         });
       });
     } else {

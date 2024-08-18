@@ -56,7 +56,7 @@ export default class MenuUiHandler extends MessageUiHandler {
 
     this.excludedMenus = () => [
       { condition: [Mode.COMMAND, Mode.TITLE].includes(mode ?? Mode.TITLE), options: [ MenuOptions.EGG_GACHA, MenuOptions.EGG_LIST] },
-      { condition: bypassLogin, options: [ MenuOptions.LOG_OUT ] }
+      // { condition: bypassLogin(), options: [ MenuOptions.LOG_OUT ] }
     ];
 
     this.menuOptions = Utils.getEnumKeys(MenuOptions)
@@ -100,7 +100,7 @@ export default class MenuUiHandler extends MessageUiHandler {
     console.log(ui.getModeChain());
     this.excludedMenus = () => [
       { condition: ![Mode.COMMAND, Mode.TITLE].includes(ui.getModeChain()[0]), options: [ MenuOptions.EGG_GACHA, MenuOptions.EGG_LIST] },
-      { condition: bypassLogin, options: [ MenuOptions.LOG_OUT ] }
+      // { condition: bypassLogin(), options: [ MenuOptions.LOG_OUT ] }
     ];
 
     this.menuOptions = Utils.getEnumKeys(MenuOptions)
@@ -227,11 +227,11 @@ export default class MenuUiHandler extends MessageUiHandler {
     }
     if (window.pokerogueImportDataGuest) {
       manageDataOptions.push({
-        label: "导入离线模式数据",
+        label: `导入${window.pokerogueModeofflineModeText||"离线模式"}数据`,
         handler: () => {
           const that = this;
           that.scene.gameData.importData(GameDataType.SYSTEM, 0 , "_downloads/data_Guest.prsv");
-          window.plus?.nativeUI?.alert("导入须知：1.在离线模式中选择 【导出数据】\n 2.在线模式中选择 【导入离线模式数据】\n 3. 导入完成",function() {
+          window.plus?.nativeUI?.alert(`导入须知：1.在${window.pokerogueModeofflineModeText||"离线模式"}中选择 【导出数据】\n 2.在线模式中选择 【导入${window.pokerogueModeofflineModeText||"离线模式"}数据】\n 3. 导入完成`,function() {
           });
           return true;
         },

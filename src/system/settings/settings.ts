@@ -567,7 +567,7 @@ export const Setting: Array<Setting> = [
     default: 0,
     type: SettingType.GENERAL,
     activatable: true,
-    isHidden: () => !hasTouchscreen()
+    // isHidden: () => !hasTouchscreen()
   },
   {
     key: SettingKeys.Shop_Overlay_Opacity,

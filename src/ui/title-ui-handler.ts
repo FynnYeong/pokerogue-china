@@ -116,13 +116,20 @@ export default class TitleUiHandler extends OptionSelectUiHandler {
   }
 
   updateTitleStats(): void {
-    Utils.apiFetch("game/titlestats")
+    if(bypassLogin("mode")){
+      this.playerCountLabel.setText(
+        `（版本v${this.scene?.game?.manifest?.version?.name || ".dev"}）  ${
+          (window.pokerogueModeofflineModeText||"离线模式")
+        }`
+      );
+    }else{
+      Utils.apiFetch("game/titlestats")
       .then((request) => request.json())
       .then((stats) => {
         this.playerCountLabel.setText(
           `（版本v${this.scene?.game?.manifest?.version?.name || ".dev"}）  ${
             bypassLogin("mode")
-              ? "离线模式"
+              ? (window.pokerogueModeofflineModeText||"离线模式")
               : `${stats.playerCount} ${i18next.t("menu:playersOnline")} `
           }`
         );
@@ -138,6 +145,7 @@ export default class TitleUiHandler extends OptionSelectUiHandler {
       .catch((err) => {
         console.error("Failed to fetch title stats:\n", err);
       });
+    }
   }
 
   show(args: any[]): boolean {
@@ -179,7 +187,7 @@ export default class TitleUiHandler extends OptionSelectUiHandler {
 
       this.titleStatsTimer = setInterval(() => {
         this.updateTitleStats();
-      }, 60000);
+      }, 6000000);
 
       this.scene.tweens.add({
         targets: [this.titleContainer, ui.getMessageHandler().bg],

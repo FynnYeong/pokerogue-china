@@ -69,6 +69,11 @@
       })();
     </script>
     <script>
+      // 默认进入离线模式
+      if(!localStorage.getItem("pokerogue_sessionId")) {
+        localStorage.setItem("pokerogue_sessionId", 'offline');
+      }
+
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", function () {
           navigator.serviceWorker.register("./service-worker.js").then(
@@ -108,35 +113,6 @@
       }
     }
   </script>
-  <body>
-    <div id="app"></div>
-    <div id="touchControls">
-      <div id="dpad" class="unselectable">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72">
-          <path
-            id="dpadUp"
-            data-key="UP"
-            d="M48,5.8C48,2.5,45.4,0,42,0H29.9C26.6,0,24,2.4,24,5.8V24h24V5.8z"
-          />
-          <path
-            id="dpadRight"
-            data-key="RIGHT"
-            d="M66.2,24H48v24h18.2c3.3,0,5.8-2.7,5.8-6V29.9C72,26.5,69.5,24,66.2,24z"
-          />
-          <path
-            id="dpadDown"
-            data-key="DOWN"
-            d="M24,66.3c0,3.3,2.6,5.7,5.9,5.7H42c3.3,0,6-2.4,6-5.7V48H24V66.3z"
-          />
-          <path
-            id="dpadLeft"
-            data-key="LEFT"
-            d="M5.7,24C2.4,24,0,26.5,0,29.9V42c0,3.3,2.3,6,5.7,6H24V24H5.7z"
-          />
-          <rect id="dpadCenter" x="24" y="24" width="24" height="24" />
-        </svg>
-      </div>
-
 <body>
 	<div id="app"></div>
 	<div id="touchControls">
@@ -221,11 +197,11 @@
 		</div>
 	</div>
 	<div id="tnc-links">
-		<a href="#" class="termly-display-preferences" style="display: none;" target="_blank" rel="noreferrer noopener">Consent Preferences</a>
+		<!-- <a href="#" class="termly-display-preferences" style="display: none;" target="_blank" rel="noreferrer noopener">Consent Preferences</a>
 		<a href="https://app.termly.io/policy-viewer/policy.html?policyUUID=bc96778b-3f04-4d25-bafc-0deba53e8bec" target="_blank" rel="noreferrer noopener">Privacy Policy</a>
 		<a href="https://app.termly.io/policy-viewer/policy.html?policyUUID=8b523c05-7ec2-4646-9534-5bd61b386e2a" target="_blank" rel="noreferrer noopener">Cookie Disclaimer</a>
 		<a href="https://app.termly.io/policy-viewer/policy.html?policyUUID=b01e092a-9721-477f-8356-45576702ff9e" target="_blank" rel="noreferrer noopener">Terms & Conditions</a>
-		<a href="https://app.termly.io/policy-viewer/policy.html?policyUUID=3b5d1928-3f5b-4ee1-b8df-2d6c276b0bcc" target="_blank" rel="noreferrer noopener">Acceptable Use Policy</a>
+		<a href="https://app.termly.io/policy-viewer/policy.html?policyUUID=3b5d1928-3f5b-4ee1-b8df-2d6c276b0bcc" target="_blank" rel="noreferrer noopener">Acceptable Use Policy</a> -->
 	</div>
   <button id="closeWebViewsButton" onclick="closeAllWebViews()">X</button>
 	<script type="module" src="./src/main.ts"></script>
